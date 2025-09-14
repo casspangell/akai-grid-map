@@ -1,0 +1,98 @@
+MIDI Controller Velocity to RGB Color Mapping Chart
+==================================================
+
+This chart shows the mapping between MIDI velocity values (0-127) and the corresponding RGB colors that will be displayed on the controller LEDs.
+
+Color        Velocity    Color        Velocity    Color        Velocity
+#000000      0          #00FF00      21          #001D59      42
+#1E1E1E      1          #005900      22          #000819      43
+#7F7F7F      2          #001900      23          #4C4CFF      44
+#FFFFFF      3          #4CFF5E      24          #0000FF      45
+#FF4C4C      4          #00FF19      25          #000059      46
+#FF0000      5          #00590D      26          #000019      47
+#590000      6          #001902      27          #874CFF      48
+#190000      7          #4CFF88      28          #5400FF      49
+#FFBD6C      8          #00FF55      29          #190064      50
+#FF5400      9          #00591D      30          #0F0030      51
+#591D00      10         #001F12      31          #FF4CFF      52
+#271B00      11         #4CFFB7      32          #FF00FF      53
+#FFFF4C      12         #00FF99      33          #590059      54
+#FFFF00      13         #005935      34          #190019      55
+#595900      14         #001912      35          #FF4C87      56
+#191900      15         #4CC3FF      36          #FF0054      57
+#88FF4C      16         #00A9FF      37          #59001D      58
+#54FF00      17         #004152      38          #220013      59
+#1D5900      18         #001019      39          #FF1500      60
+#142B00      19         #4C88FF      40          #993500      61
+#4CFF4C      20         #0055FF      41          #795100      62
+
+Color        Velocity    Color        Velocity    Color        Velocity
+#001D59      42         #FF0000      72          #0D5038      102
+#000819      43         #BDFF2D      73          #15152A      103
+#4C4CFF      44         #AFED06      74          #16205A      104
+#0000FF      45         #64FF09      75          #693C1C      105
+#000059      46         #108B00      76          #A8000A      106
+#000019      47         #00FF87      77          #DE513D      107
+#874CFF      48         #00A9FF      78          #D86A1C      108
+#5400FF      49         #002AFF      79          #FFE126      109
+#190064      50         #3F00FF      80          #9EE12F      110
+#0F0030      51         #7A00FF      81          #67B50F      111
+#FF4CFF      52         #B21A7D      82          #1E1E30      112
+#FF00FF      53         #402100      83          #DCFF6B      113
+#590059      54         #FF4A00      84          #80FFBD      114
+#190019      55         #88E106      85          #9A99FF      115
+#FF4C87      56         #72FF15      86          #8E66FF      116
+#FF0054      57         #00FF00      87          #404040      117
+#59001D      58         #3BFF26      88          #757575      118
+#220013      59         #59FF71      89          #E0FFFF      119
+#FF1500      60         #38FFCC      90          #A00000      120
+#993500      61         #5B8AFF      91          #350000      121
+#795100      62         #3151C6      92          #1AD000      122
+#436400      63         #877FE9      93          #074200      123
+#033900      64         #D31DFF      94          #B9B000      124
+#005735      65         #FF005D      95          #3F3100      125
+#00547F      66         #FF7F00      96          #B35F00      126
+#0000FF      67         #B9B000      97          #4B1502      127
+#00454F      68         #90FF00      98
+#2500CC      69         #835D07      99
+#7F7F7F      70         #392b00      100
+#202020      71         #144C10      101
+
+Usage Notes:
+============
+- Velocity 0: Black (LED off)
+- Velocity 1-2: Dark grays
+- Velocity 3: White
+- Velocity 4-7: Red shades
+- Velocity 8-11: Orange/Yellow shades
+- Velocity 12-15: Yellow shades
+- Velocity 16-19: Green shades
+- Velocity 20-23: Light green shades
+- Velocity 24-27: Bright green shades
+- Velocity 28-31: Cyan/Teal shades
+- Velocity 32-35: Blue shades
+- Velocity 36-39: Dark blue shades
+- Velocity 40-43: Purple shades
+- Velocity 44-47: Blue shades
+- Velocity 48-51: Purple shades
+- Velocity 52-55: Magenta shades
+- Velocity 56-59: Pink shades
+- Velocity 60-63: Red/Orange shades
+- Velocity 64-67: Various mixed colors
+- Velocity 68-71: Blue/Purple shades
+- Velocity 72-75: Yellow/Green shades
+- Velocity 76-79: Orange shades
+- Velocity 80-83: Purple shades
+- Velocity 84-87: Green shades
+- Velocity 88-91: Blue shades
+- Velocity 92-95: Purple shades
+- Velocity 96-99: Yellow shades
+- Velocity 100-103: Brown shades
+- Velocity 104-107: Mixed colors
+- Velocity 108-111: Yellow/Green shades
+- Velocity 112-115: Purple shades
+- Velocity 116-119: Blue shades
+- Velocity 120-123: Red shades
+- Velocity 124-127: Orange/Yellow shades
+
+This mapping allows precise color control of the controller LEDs by sending the appropriate velocity value with Note On messages.

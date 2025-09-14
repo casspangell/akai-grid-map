@@ -1,0 +1,427 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a1a;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #2a2a2a;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid #3a3a3a;
+}
+
+h1 {
+    text-align: center;
+    color: #e0e0e0;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.status {
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.status.disconnected {
+    background: rgba(255, 107, 107, 0.3);
+    border: 2px solid #ff6b6b;
+}
+
+.status.connected {
+    background: rgba(81, 207, 102, 0.3);
+    border: 2px solid #51cf66;
+}
+
+.enable-btn {
+    background: #51cf66;
+    color: white;
+    border: 2px solid #51cf66;
+    padding: 15px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(81, 207, 102, 0.3);
+}
+
+.enable-btn:hover {
+    background: #40c057;
+    border-color: #40c057;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(81, 207, 102, 0.4);
+}
+
+.enable-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(81, 207, 102, 0.3);
+}
+
+.devices {
+    margin-bottom: 30px;
+}
+
+.device-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.device {
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #ffd93d;
+    display: inline-block;
+}
+
+.device h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.midi-log {
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+}
+
+.midi-message {
+    padding: 5px 0;
+    border-bottom: 1px solid #3a3a3a;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.midi-message:last-child {
+    border-bottom: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.note-on { color: #51cf66; }
+.note-off { color: #ff6b6b; }
+.control-change { color: #ffd93d; }
+.program-change { color: #74c0fc; }
+.pitch-bend { color: #ff9f43; }
+
+.clear-btn {
+    background: #3a3a3a;
+    color: #e0e0e0;
+    border: 2px solid #4a4a4a;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+    transform: translateY(-2px);
+}
+
+.info {
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    font-size: 0.9em;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 8px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    border: 2px solid #3a3a3a;
+    max-width: 400px;
+}
+
+.grid-pad {
+    width: 40px;
+    height: 40px;
+    background: #3a3a3a;
+    border: 2px solid #4a4a4a;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #b0b0b0;
+    font-size: 10px;
+    font-weight: bold;
+    transition: all 0.1s ease;
+    position: relative;
+}
+
+.grid-pad:hover {
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+    transform: scale(1.05);
+}
+
+.grid-pad.active {
+    background: #51cf66;
+    border-color: #40c057;
+    transform: scale(0.95);
+    box-shadow: 0 0 15px rgba(81, 207, 102, 0.5);
+}
+
+.grid-pad.clicked {
+    background: #ff6b6b;
+    border-color: #e55353;
+    transform: scale(0.95);
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+}
+
+.grid-pad.velocity-low {
+    background: #ffd93d;
+    border-color: #ffc107;
+}
+
+.grid-pad.velocity-medium {
+    background: #ff9f43;
+    border-color: #fd7e14;
+}
+
+.grid-pad.velocity-high {
+    background: #ff6b6b;
+    border-color: #e55353;
+}
+
+.grid-pad::before {
+    content: attr(data-coords);
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 8px;
+    color: #707070;
+}
+
+.controls-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 20px;
+}
+
+.circular-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+}
+
+.circular-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #3a3a3a;
+    border: 2px solid #4a4a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e0e0e0;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.circular-button:hover {
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+    transform: scale(1.05);
+}
+
+.circular-button.active {
+    background: #51cf66;
+    border-color: #40c057;
+    box-shadow: 0 0 10px rgba(81, 207, 102, 0.5);
+}
+
+.circular-button.clicked {
+    background: #ff6b6b;
+    border-color: #e55353;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.faders-container {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.fader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.fader-track {
+    width: 20px;
+    height: 100px;
+    background: #3a3a3a;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.fader-knob {
+    width: 16px;
+    height: 16px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+
+.fader-label {
+    font-size: 10px;
+    color: #b0b0b0;
+    text-align: center;
+}
+
+.color-palette {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.color-palette h3 {
+    margin-bottom: 15px;
+    color: #e0e0e0;
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid #4a4a4a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: #ffffff;
+}
+
+.color-option.selected {
+    border-color: #ffd93d;
+    box-shadow: 0 0 15px rgba(255, 217, 61, 0.5);
+}
+
+.color-option::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #b0b0b0;
+    white-space: nowrap;
+}
+
+.reset-btn {
+    background: #d63031;
+    color: white;
+    border: 2px solid #d63031;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.reset-btn:hover {
+    background: #a02929;
+    border-color: #a02929;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(214, 48, 49, 0.3);
+}
+
+.reset-btn:active {
+    transform: translateY(0);
+}
+
+.debug-btn {
+    background: #6c5ce7;
+    color: white;
+    border: 2px solid #6c5ce7;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.debug-btn:hover {
+    background: #5a4fcf;
+    border-color: #5a4fcf;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.debug-btn:active {
+    transform: translateY(0);
+}

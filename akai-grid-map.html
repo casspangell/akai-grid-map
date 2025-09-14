@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎛️ MIDI Controller Reader</title>
+    <script src="https://cdn.jsdelivr.net/npm/webmidi@3.1.0/dist/iife/webmidi.iife.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎛️ MIDI Controller Reader</h1>
+        
+        <div class="status" id="status">
+            Click "Enable MIDI" to start reading your MIDI controller
+        </div>
+        
+        <button id="enableBtn" class="enable-btn">Enable MIDI</button>
+        
+        <div class="devices">
+            <h2>Connected Devices:</h2>
+            <div id="deviceList" class="device-list">No devices detected</div>
+        </div>
+        
+        <div class="color-palette">
+            <h3>🎨 LED Color Palette</h3>
+            <div class="color-options" id="colorOptions">
+                <!-- Color options will be generated here -->
+            </div>
+            <button id="resetAllBtn" class="reset-btn">Reset All Pads</button>
+            <button id="debugBtn" class="debug-btn">Debug Info</button>
+        </div>
+        
+        <div>
+            <h2>Controller Grid:</h2>
+            <div id="gridContainer" class="grid-container">
+                <div class="grid" id="apcGrid"></div>
+            </div>
+            
+            <div class="controls-container">
+                <div class="circular-buttons">
+                    <h3>Number Buttons</h3>
+                    <div id="numberButtons" class="button-row"></div>
+                    
+                    <h3>Letter Buttons</h3>
+                    <div id="letterButtons" class="button-row"></div>
+                </div>
+                
+                <div class="circular-buttons">
+                    <h3>Faders</h3>
+                    <div id="fadersContainer" class="faders-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h3>📋 Instructions:</h3>
+            <ul>
+                <li><strong>Click "Enable MIDI"</strong> to connect to your MIDI controller</li>
+                <li><strong>Grid Layout:</strong> 8x8 grid (64 pads) with MIDI notes 0-63</li>
+                <li><strong>Coordinate System:</strong> [0,0] = bottom-left, reading left-to-right, bottom-to-top</li>
+                <li><strong>Click any pad</strong> on the web app to light up the corresponding LED on your controller</li>
+                <li><strong>Select colors</strong> from the palette to change LED colors</li>
+                <li><strong>Use "Off" color</strong> to turn off LEDs</li>
+                <li><strong>Reset All Pads</strong> turns off all LEDs on both web app and controller</li>
+            </ul>
+        </div>
+        
+        <div class="midi-log" id="midiLog">
+            <div class="midi-message">
+                <strong>MIDI messages will appear here...</strong>
+            </div>
+        </div>
+        
+        <button id="clearBtn" class="clear-btn">Clear MIDI Log</button>
+        <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
