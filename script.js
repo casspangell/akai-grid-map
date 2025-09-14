@@ -15,6 +15,7 @@ let midiOutputs = [];
 // [0,0] = bottom-left = note 0, reading left to right, bottom to top
 const gridPads = {};
 const controllerNotes = {};
+const buttonStates = {}; // Track toggle states: { midiNote: { isOn: boolean, assignedColor: string } }
 
 // Generate 8x8 grid mapping: [0,0] to [7,7] with notes 0-63
 for (let row = 0; row < 8; row++) {
@@ -215,16 +216,15 @@ function handleMIDIMessage(message) {
         className = 'note-on';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${message.channel}`;
         
-        // Update grid pad visual feedback
-        updateGridPad(message.note.number, true, message.velocity);
+        // Toggle button state if it has an assigned color
+        toggleButtonState(message.note.number);
         
     } else if (message.type === 'noteoff') {
         messageType = 'Note Off';
         className = 'note-off';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Channel: ${message.channel}`;
         
-        // Update grid pad visual feedback
-        updateGridPad(message.note.number, false, 0);
+        // Note: We don't handle noteoff for toggling - only noteon triggers the toggle
         
     } else if (message.type === 'controlchange') {
         messageType = 'Control Change';
@@ -386,35 +386,65 @@ function togglePadClick(pad) {
     // Get selected color
     const color = colorPalette.find(c => c.value === selectedColor);
     
-    // Handle "Off" color specially - always turn off LED
+    // Handle "Off" color specially - remove assignment and turn off LED
     if (selectedColor === 'off') {
         pad.classList.remove('clicked');
         // Remove color styling
         pad.style.backgroundColor = '';
         pad.style.borderColor = '';
-        console.log(`Web App: Turned off pad [${coordRow},${col}] - MIDI Note: ${midiNote} with Off color`);
+        // Remove button state tracking
+        delete buttonStates[midiNote];
+        console.log(`Web App: Removed color assignment from pad [${coordRow},${col}] - MIDI Note: ${midiNote}`);
         // Send Note Off to controller (turn off LED)
         sendMIDIToController(midiNote, false, 0);
         return;
     }
     
-    // Toggle clicked state for non-off colors
-    if (pad.classList.contains('clicked')) {
-        pad.classList.remove('clicked');
-        // Remove color styling
-        pad.style.backgroundColor = '';
-        pad.style.borderColor = '';
-        console.log(`Web App: Released pad [${coordRow},${col}] - MIDI Note: ${midiNote}`);
-        // Send Note Off to controller (turn off LED)
-        sendMIDIToController(midiNote, false, 0);
-    } else {
-        pad.classList.add('clicked');
-        // Apply selected color styling
-        pad.style.backgroundColor = color.css;
-        pad.style.borderColor = color.css;
-        console.log(`Web App: Pressed pad [${coordRow},${col}] - MIDI Note: ${midiNote} with ${color.name}`);
-        // Send Note On to controller (turn on LED with selected color)
+    // Assign color to button (this sets up the button for toggle behavior)
+    buttonStates[midiNote] = {
+        isOn: true, // Start in ON state
+        assignedColor: selectedColor
+    };
+    
+    // Apply visual styling to show assignment
+    pad.classList.add('clicked');
+    pad.style.backgroundColor = color.css;
+    pad.style.borderColor = color.css;
+    console.log(`Web App: Assigned ${color.name} color to pad [${coordRow},${col}] - MIDI Note: ${midiNote} (immediately ON)`);
+    
+    // Immediately turn ON the LED on the physical controller
+    sendMIDIToController(midiNote, true, color.velocity);
+}
+
+function toggleButtonState(midiNote) {
+    // Check if this button has an assigned color
+    if (!buttonStates[midiNote]) {
+        console.log(`Physical Controller: Button ${midiNote} pressed but no color assigned - ignoring`);
+        return;
+    }
+    
+    const buttonState = buttonStates[midiNote];
+    const pad = gridPads[midiNote];
+    
+    if (!pad) {
+        console.log(`Physical Controller: Button ${midiNote} pressed but pad not found`);
+        return;
+    }
+    
+    // Toggle the button state
+    buttonState.isOn = !buttonState.isOn;
+    
+    // Get the assigned color
+    const color = colorPalette.find(c => c.value === buttonState.assignedColor);
+    
+    if (buttonState.isOn) {
+        // Turn ON: Send LED with assigned color
         sendMIDIToController(midiNote, true, color.velocity);
+        console.log(`Physical Controller: Toggled button ${midiNote} ON with ${color.name} color`);
+    } else {
+        // Turn OFF: Send LED off
+        sendMIDIToController(midiNote, false, 0);
+        console.log(`Physical Controller: Toggled button ${midiNote} OFF`);
     }
 }
 
@@ -508,7 +538,12 @@ function resetAllPads() {
         button.style.borderColor = '';
     });
     
-    console.log('All pads reset - LEDs turned off');
+    // Clear all button states
+    Object.keys(buttonStates).forEach(midiNote => {
+        delete buttonStates[midiNote];
+    });
+    
+    console.log('All pads reset - LEDs turned off and button states cleared');
 }
 
 function showDebugInfo() {
@@ -517,8 +552,17 @@ function showDebugInfo() {
     console.log('MIDI Outputs:', midiOutputs.length);
     console.log('Active Grid Pads:', Object.keys(gridPads).length);
     console.log('Clicked Pads:', Object.values(gridPads).filter(pad => pad.classList.contains('clicked')).length);
+    console.log('Button States:', Object.keys(buttonStates).length);
     console.log('WebMidi.js Version:', WebMidi ? 'Available' : 'Not Available');
     console.log('Current Timestamp:', new Date().toLocaleTimeString());
+    
+    // Show button states details
+    if (Object.keys(buttonStates).length > 0) {
+        console.log('Button State Details:');
+        Object.entries(buttonStates).forEach(([midiNote, state]) => {
+            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'}`);
+        });
+    }
     
     // Check for any potential issues
     const clickedPads = Object.values(gridPads).filter(pad => pad.classList.contains('clicked'));
