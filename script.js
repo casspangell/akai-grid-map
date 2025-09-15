@@ -55,9 +55,10 @@ const colorPalette = [
 
 // Check if WebMidi.js is available
 if (typeof WebMidi === 'undefined') {
-    statusEl.textContent = 'WebMidi.js library not loaded';
     statusEl.className = 'status disconnected';
-    enableBtn.style.display = 'none';
+    statusTextEl.textContent = 'WebMidi.js library not loaded';
+    loadingSpinnerEl.style.display = 'none';
+    findMidiBtn.style.display = 'block';
 }
 
 // Event Listeners
@@ -145,8 +146,10 @@ async function enableMIDI() {
         });
         
     } catch (error) {
-        statusEl.textContent = 'Failed to access MIDI devices: ' + error.message;
         statusEl.className = 'status disconnected';
+        statusTextEl.textContent = 'Failed to access MIDI devices: ' + error.message;
+        loadingSpinnerEl.style.display = 'none';
+        findMidiBtn.style.display = 'block';
     }
 }
 
