@@ -15,10 +15,11 @@
         <h1>Akai APCmini Grid Map</h1>
         
         <div class="status" id="status">
-            Click "Enable MIDI" to start reading your MIDI controller
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <span id="statusText">Connecting to MIDI devices...</span>
         </div>
         
-        <button id="enableBtn" class="enable-btn">Enable MIDI</button>
+        <button id="findMidiBtn" class="find-midi-btn" style="display: none;">Find MIDI Device</button>
         
         <div class="devices">
             <h2>Connected Devices:</h2>

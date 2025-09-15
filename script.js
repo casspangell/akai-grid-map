@@ -2,7 +2,9 @@
 
 // DOM Elements
 const statusEl = document.getElementById('status');
-const enableBtn = document.getElementById('enableBtn');
+const statusTextEl = document.getElementById('statusText');
+const loadingSpinnerEl = document.getElementById('loadingSpinner');
+const findMidiBtn = document.getElementById('findMidiBtn');
 const deviceListEl = document.getElementById('deviceList');
 const midiLogEl = document.getElementById('midiLog');
 const clearBtn = document.getElementById('clearBtn');
@@ -59,7 +61,12 @@ if (typeof WebMidi === 'undefined') {
 }
 
 // Event Listeners
-enableBtn.addEventListener('click', enableMIDI);
+// Auto-enable MIDI on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(enableMIDI, 500); // Small delay to ensure page is fully loaded
+});
+
+findMidiBtn.addEventListener('click', enableMIDI);
 clearBtn.addEventListener('click', () => {
     midiLogEl.innerHTML = '';
 });
@@ -108,11 +115,18 @@ if (selectedColor === 'off') {
 // MIDI Functions
 async function enableMIDI() {
     try {
+        // Show loading state
+        statusEl.className = 'status loading';
+        statusTextEl.textContent = 'Connecting to MIDI devices...';
+        loadingSpinnerEl.style.display = 'block';
+        
         await WebMidi.enable();
         
-        statusEl.textContent = 'MIDI enabled successfully';
+        // Update to connected state
         statusEl.className = 'status connected';
-        enableBtn.style.display = 'none';
+        statusTextEl.textContent = 'MIDI enabled successfully';
+        loadingSpinnerEl.style.display = 'none';
+        findMidiBtn.style.display = 'none';
         
         updateDeviceList();
         setupMIDIInputs();
