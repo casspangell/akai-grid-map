@@ -224,7 +224,6 @@ h1 {
 }
 
 .grid-pad::before {
-    content: attr(data-coords);
     position: absolute;
     top: 2px;
     left: 2px;
