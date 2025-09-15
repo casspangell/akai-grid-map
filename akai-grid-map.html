@@ -27,6 +27,8 @@
                 <!-- Color options will be generated here -->
             </div>
             
+            <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
+            
             <div class="button-behavior-toggle" id="buttonBehaviorToggle" style="display: none;">
 
                 <div class="behavior-options">
@@ -35,8 +37,7 @@
                         <span class="behavior-label">
                             <div class="behavior-preview toggle-preview"></div>
                             <div class="behavior-text">
-                                <strong>Toggle</strong><br>
-                                <small>Can be turned ON/OFF</small>
+                                <strong>Toggle On/Off</strong><br>
                             </div>
                         </span>
                     </label>
@@ -46,17 +47,15 @@
                             <div class="behavior-preview solid-preview"></div>
                             <div class="behavior-text">
                                 <strong>Solid</strong><br>
-                                <small>Always stays ON</small>
                             </div>
                         </span>
                     </label>
                     <label class="behavior-option">
                         <input type="radio" name="buttonBehavior" value="blink">
                         <span class="behavior-label">
-                            <div class="behavior-preview blink-preview"></div>
+                            <div class="behavior-preview"></div>
                             <div class="behavior-text">
                                 <strong>Blink</strong><br>
-                                <small>Blinks when pressed</small>
                             </div>
                         </span>
                     </label>
@@ -75,21 +74,6 @@
                         <div class="bottom-buttons" id="bottomButtons"></div>
                     </div>
                     <div class="side-buttons" id="sideButtons"></div>
-                </div>
-            </div>
-            
-            <div class="controls-container">
-                <div class="circular-buttons">
-                    <h3>Number Buttons</h3>
-                    <div id="numberButtons" class="button-row"></div>
-                    
-                    <h3>Letter Buttons</h3>
-                    <div id="letterButtons" class="button-row"></div>
-                </div>
-                
-                <div class="circular-buttons">
-                    <h3>Faders</h3>
-                    <div id="fadersContainer" class="faders-container"></div>
                 </div>
             </div>
         </div>
@@ -114,7 +98,6 @@
         </div>
         
         <button id="clearBtn" class="clear-btn">Clear MIDI Log</button>
-        <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
         <button id="testMIDIBtn" class="test-midi-btn" onclick="testMIDICommunication()">🧪 Test MIDI</button>
     </div>
     

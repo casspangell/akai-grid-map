@@ -712,7 +712,18 @@ function clearGrid() {
     // Remove active states from all grid pads
     Object.values(gridPads).forEach(pad => {
         pad.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high', 'clicked');
+        // Clear visual styling (background and border colors)
+        pad.style.backgroundColor = '';
+        pad.style.borderColor = '';
     });
+    
+    // Clear button states tracking
+    Object.keys(buttonStates).forEach(midiNote => {
+        delete buttonStates[midiNote];
+    });
+    
+    // Stop all blinking buttons
+    blinkingButtons.clear();
     
     // Turn off all LEDs on controller
     Object.keys(gridPads).forEach(midiNote => {
@@ -722,6 +733,9 @@ function clearGrid() {
     // Remove active states from circular buttons
     Object.values(circularButtons).forEach(button => {
         button.classList.remove('active', 'clicked');
+        // Clear visual styling for circular buttons too
+        button.style.backgroundColor = '';
+        button.style.borderColor = '';
     });
     
     // Reset faders to middle position
@@ -729,6 +743,8 @@ function clearGrid() {
         fader.knob.style.top = '50%';
         fader.value = 64;
     });
+    
+    console.log('Grid visuals cleared - all pads reset to default state');
 }
 
 function resetAllPads() {
