@@ -69,7 +69,13 @@
         
         <div>
             <div id="gridContainer" class="grid-container">
-                <div class="grid" id="apcGrid"></div>
+                <div class="main-controls">
+                    <div class="grid-section">
+                        <div class="grid" id="apcGrid"></div>
+                        <div class="bottom-buttons" id="bottomButtons"></div>
+                    </div>
+                    <div class="side-buttons" id="sideButtons"></div>
+                </div>
             </div>
             
             <div class="controls-container">
@@ -109,6 +115,7 @@
         
         <button id="clearBtn" class="clear-btn">Clear MIDI Log</button>
         <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
+        <button id="testMIDIBtn" class="test-midi-btn" onclick="testMIDICommunication()">🧪 Test MIDI</button>
     </div>
     
     <script src="script.js"></script>

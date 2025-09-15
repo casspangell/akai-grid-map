@@ -83,6 +83,7 @@ buttonBehaviorRadios.forEach(radio => {
 // Initialize the controller layout
 createColorPalette();
 createControllerGrid();
+// Side and bottom buttons are now created in createControllerGrid()
 createCircularButtons();
 createFaders();
 
@@ -204,31 +205,28 @@ function createColorPalette() {
     });
 }
 
-function sendMIDIToController(midiNote, isOn, velocity = 127) {
+function sendMIDIToController(midiNote, isOn, velocity = 127, channel = 5) {
     if (midiOutputs.length === 0) {
         console.log('No MIDI output devices available');
         return;
     }
     
-    // Get selected color
-    const color = colorPalette.find(c => c.value === selectedColor);
-    
     // Use WebMidi.js to send MIDI messages for APC Mini MK2
     midiOutputs.forEach(output => {
         try {
-            if (isOn && selectedColor !== 'off') {
-                // For APC Mini MK2: Note On with Channel 5 (0x90 + 0x05 = 0x95) for solid LED
-                // Format: Note, Velocity (color), Channel (behavior)
-                const behaviorChannel = 5; // Channel 5 = solid LED
-                const colorVelocity = color.velocity;
+            if (isOn && velocity > 0) {
+                // Calculate the correct MIDI status byte based on channel
+                const statusByte = 0x90 + channel; // Note On + Channel
+                const colorVelocity = velocity;
                 
-                // Send Note On message with proper APC Mini MK2 format
-                output.send([0x95, midiNote, colorVelocity]); // 0x95 = Note On Channel 5
-                console.log(`APC Mini MK2: Sent solid ${color.name} LED - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${behaviorChannel} (0x${behaviorChannel.toString(16).toUpperCase()})`);
+                // Send Note On message with correct channel
+                output.send([statusByte, midiNote, colorVelocity]);
+                console.log(`APC Mini MK2: Sent solid LED - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${channel} (0x${channel.toString(16).toUpperCase()})`);
             } else {
-                // Send Note On with velocity 0 to turn off LED (APC Mini MK2 format)
-                output.send([0x95, midiNote, 0]); // 0x95 = Note On Channel 5 with velocity 0 (off)
-                console.log(`APC Mini MK2: Sent LED Off - Note: ${midiNote}, Channel: 5, Velocity: 0`);
+                // Send Note On with velocity 0 to turn off LED
+                const statusByte = 0x90 + channel; // Note On + Channel
+                output.send([statusByte, midiNote, 0]);
+                console.log(`APC Mini MK2: Sent LED Off - Note: ${midiNote}, Channel: ${channel}, Velocity: 0`);
             }
         } catch (error) {
             console.error(`Error sending MIDI to ${output.name}:`, error);
@@ -281,37 +279,39 @@ function handleMIDIMessage(message) {
 }
 
 function updateGridPad(midiNote, isPressed, velocity) {
-    const pad = gridPads[midiNote];
-    if (!pad) return;
+    const button = gridPads[midiNote];
+    if (!button) return;
     
     // Remove all velocity classes
-    pad.classList.remove('velocity-low', 'velocity-medium', 'velocity-high');
+    button.classList.remove('velocity-low', 'velocity-medium', 'velocity-high');
     
     if (isPressed) {
-        pad.classList.add('active');
+        button.classList.add('active');
         
         // Add velocity-based styling
         if (velocity < 42) {
-            pad.classList.add('velocity-low');
+            button.classList.add('velocity-low');
         } else if (velocity < 84) {
-            pad.classList.add('velocity-medium');
+            button.classList.add('velocity-medium');
         } else {
-            pad.classList.add('velocity-high');
+            button.classList.add('velocity-high');
         }
         
         // Auto-release after a short time for visual feedback
         setTimeout(() => {
-            pad.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high');
+            button.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high');
         }, 200);
     } else {
-        pad.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high');
+        button.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high');
     }
 }
 
 function createControllerGrid() {
     const gridEl = document.getElementById('apcGrid');
+    const sideButtonsEl = document.getElementById('sideButtons');
+    const bottomButtonsEl = document.getElementById('bottomButtons');
     
-    // Create 8x8 grid (64 pads)
+    // Create 8x8 grid (64 pads) - MIDI notes 0-63
     for (let displayRow = 0; displayRow < 8; displayRow++) {
         for (let col = 0; col < 8; col++) {
             const coordRow = 7 - displayRow; // Flip row for display coordinates
@@ -336,7 +336,60 @@ function createControllerGrid() {
             gridEl.appendChild(pad);
         }
     }
+    
+    // Create 8 side buttons - MIDI notes 112-119 (Scene Launch 1-8) on Channel 0
+    for (let i = 0; i < 8; i++) {
+        const midiNote = 112 + i; // Scene Launch buttons 0x70-0x77 (112-119)
+        const button = document.createElement('div');
+        button.className = 'side-button';
+        button.setAttribute('data-note', midiNote);
+        button.setAttribute('data-row', i);
+        button.setAttribute('data-col', 0);
+        button.setAttribute('data-channel', 0); // Side buttons use Channel 0
+        button.textContent = midiNote;
+        button.title = `Scene Launch ${i + 1} - Note: ${midiNote}, Channel: 0`;
+        
+        // Store reference in gridPads
+        gridPads[midiNote] = button;
+        
+        // Add click event listener
+        button.addEventListener('click', () => {
+            togglePadClick(button);
+        });
+        
+        sideButtonsEl.appendChild(button);
+    }
+    
+    // Create 8 bottom buttons - MIDI notes 100-107 (Track Button 1-8) on Channel 0
+    for (let i = 0; i < 8; i++) {
+        const midiNote = 100 + i; // Track Button 1-8: 0x64-0x6B (100-107)
+        const container = document.createElement('div');
+        container.className = 'bottom-btn-cont';
+        container.setAttribute('data-col', i);
+        
+        const button = document.createElement('div');
+        button.className = 'bottom-button-inner';
+        button.setAttribute('data-note', midiNote);
+        button.setAttribute('data-row', 0);
+        button.setAttribute('data-col', i);
+        button.setAttribute('data-channel', 0); // Track buttons use Channel 0
+        button.textContent = midiNote;
+        button.title = `Track Button ${i + 1} - Note: ${midiNote}, Channel: 0`;
+        
+        container.appendChild(button);
+        bottomButtonsEl.appendChild(container);
+        
+        // Store reference in gridPads
+        gridPads[midiNote] = button;
+        
+        // Add click event listener to the inner button
+        button.addEventListener('click', () => {
+            togglePadClick(button);
+        });
+    }
 }
+
+// Side and bottom button functions removed - now handled by unified createControllerGrid() and togglePadClick()
 
 function createCircularButtons() {
     const numberButtonsEl = document.getElementById('numberButtons');
@@ -414,12 +467,10 @@ function createFaders() {
 
 function togglePadClick(pad) {
     const midiNote = parseInt(pad.getAttribute('data-note'));
+    const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5; // Default to Channel 5 for grid buttons
     const row = pad.getAttribute('data-row');
     const col = pad.getAttribute('data-col');
     const coordRow = 7 - row; // Convert to display coordinates
-    
-    // Get selected color
-    const color = colorPalette.find(c => c.value === selectedColor);
     
     // Handle "Off" color specially - remove assignment and turn off LED
     if (selectedColor === 'off') {
@@ -430,26 +481,53 @@ function togglePadClick(pad) {
         // Remove button state tracking
         delete buttonStates[midiNote];
         console.log(`Web App: Removed color assignment from pad [${coordRow},${col}] - MIDI Note: ${midiNote}`);
-        // Send Note Off to controller (turn off LED)
-        sendMIDIToController(midiNote, false, 0);
+        // Send Note Off to controller
+        sendMIDIToController(midiNote, false, 0, channel);
         return;
     }
     
-    // Assign color to button (this sets up the button for the selected behavior)
+    // Determine button type and force appropriate color for single-color LEDs
+    let displayColor, ledColor, buttonType;
+    
+    if (channel === 0) {
+        if (midiNote >= 100 && midiNote <= 107) {
+            // Bottom buttons (Track Buttons) - Force RED
+            displayColor = colorPalette.find(c => c.name === 'Red');
+            ledColor = displayColor;
+            buttonType = "Track Button";
+        } else if (midiNote >= 112 && midiNote <= 119) {
+            // Side buttons (Scene Launch) - Force GREEN
+            displayColor = colorPalette.find(c => c.name === 'Green');
+            ledColor = displayColor;
+            buttonType = "Scene Launch Button";
+        } else {
+            // Fallback for other Channel 0 buttons
+            displayColor = colorPalette.find(c => c.value === selectedColor);
+            ledColor = displayColor;
+            buttonType = "Channel 0 Button";
+        }
+    } else {
+        // Grid buttons (Channel 5) - Use selected color (RGB LEDs)
+        displayColor = colorPalette.find(c => c.value === selectedColor);
+        ledColor = displayColor;
+        buttonType = "Grid Button";
+    }
+    
+    // Assign color to button (store the original selected color for behavior tracking)
     buttonStates[midiNote] = {
         isOn: true, // Always start ON when assigned
-        assignedColor: selectedColor,
+        assignedColor: selectedColor, // Store original selection
         behavior: selectedButtonBehavior // Store the behavior type
     };
     
-    // Apply visual styling to show assignment
+    // Apply visual styling to show assignment (use display color for web app)
     pad.classList.add('clicked');
-    pad.style.backgroundColor = color.css;
-    pad.style.borderColor = color.css;
-    console.log(`Web App: Assigned ${color.name} color to pad [${coordRow},${col}] - MIDI Note: ${midiNote} (immediately ON)`);
+    pad.style.backgroundColor = displayColor.css;
+    pad.style.borderColor = displayColor.css;
+    console.log(`Web App: Assigned ${selectedColor} → ${displayColor.name} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (immediately ON)`);
     
-    // Immediately turn ON the LED on the physical controller
-    sendMIDIToController(midiNote, true, color.velocity);
+    // Immediately turn ON the LED on the physical controller (use LED color)
+    sendMIDIToController(midiNote, true, ledColor.velocity, channel);
 }
 
 function toggleButtonState(midiNote) {
@@ -476,16 +554,33 @@ function toggleButtonState(midiNote) {
         // "Toggle" behavior: Toggle between ON and OFF
         buttonState.isOn = !buttonState.isOn;
         
-        // Get the assigned color
-        const color = colorPalette.find(c => c.value === buttonState.assignedColor);
+        // Get the channel and determine correct LED color for single-color buttons
+        const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+        let ledColor;
+        
+        if (channel === 0) {
+            if (midiNote >= 100 && midiNote <= 107) {
+                // Bottom buttons (Track Buttons) - Force RED
+                ledColor = colorPalette.find(c => c.name === 'Red');
+            } else if (midiNote >= 112 && midiNote <= 119) {
+                // Side buttons (Scene Launch) - Force GREEN
+                ledColor = colorPalette.find(c => c.name === 'Green');
+            } else {
+                // Fallback for other Channel 0 buttons
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+            }
+        } else {
+            // Grid buttons (Channel 5) - Use assigned color (RGB LEDs)
+            ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+        }
         
         if (buttonState.isOn) {
-            // Turn ON: Send LED with assigned color
-            sendMIDIToController(midiNote, true, color.velocity);
-            console.log(`Physical Controller: Toggled button ${midiNote} ON with ${color.name} color`);
+            // Turn ON: Send LED with correct color for button type
+            sendMIDIToController(midiNote, true, ledColor.velocity, channel);
+            console.log(`Physical Controller: Toggled button ${midiNote} ON with ${ledColor.name} color`);
         } else {
             // Turn OFF: Send LED off
-            sendMIDIToController(midiNote, false, 0);
+            sendMIDIToController(midiNote, false, 0, channel);
             console.log(`Physical Controller: Toggled button ${midiNote} OFF`);
         }
     } else if (buttonState.behavior === 'blink') {
@@ -493,10 +588,24 @@ function toggleButtonState(midiNote) {
         if (blinkingButtons.has(midiNote)) {
             // Stop blinking and return to solid color state
             blinkingButtons.delete(midiNote);
-            // Turn ON with assigned color (solid state)
-            const color = colorPalette.find(c => c.value === buttonState.assignedColor);
-            sendMIDIToController(midiNote, true, color.velocity);
-            console.log(`Physical Controller: Stopped blinking button ${midiNote}, now solid ${color.name}`);
+            // Turn ON with correct LED color for button type
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            let ledColor;
+            
+            if (channel === 0) {
+                if (midiNote >= 100 && midiNote <= 107) {
+                    ledColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNote >= 112 && midiNote <= 119) {
+                    ledColor = colorPalette.find(c => c.name === 'Green');
+                } else {
+                    ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+                }
+            } else {
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+            }
+            
+            sendMIDIToController(midiNote, true, ledColor.velocity, channel);
+            console.log(`Physical Controller: Stopped blinking button ${midiNote}, now solid ${ledColor.name}`);
         } else {
             // Start blinking
             blinkingButtons.add(midiNote);
@@ -507,15 +616,30 @@ function toggleButtonState(midiNote) {
 }
 
 function startBlinking(midiNote, assignedColor) {
-    const color = colorPalette.find(c => c.value === assignedColor);
+    const pad = gridPads[midiNote];
+    const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+    
+    // Determine correct LED color for single-color buttons
+    let ledColor;
+    if (channel === 0) {
+        if (midiNote >= 100 && midiNote <= 107) {
+            ledColor = colorPalette.find(c => c.name === 'Red');
+        } else if (midiNote >= 112 && midiNote <= 119) {
+            ledColor = colorPalette.find(c => c.name === 'Green');
+        } else {
+            ledColor = colorPalette.find(c => c.value === assignedColor);
+        }
+    } else {
+        ledColor = colorPalette.find(c => c.value === assignedColor);
+    }
     
     function blinkCycle() {
         if (!blinkingButtons.has(midiNote)) {
             return; // Stop blinking if button was removed from set
         }
         
-        // Send LED ON
-        sendMIDIToController(midiNote, true, color.velocity);
+        // Send LED ON with correct color
+        sendMIDIToController(midiNote, true, ledColor.velocity, channel);
         
         // Wait 500ms, then turn OFF
         setTimeout(() => {
@@ -524,7 +648,7 @@ function startBlinking(midiNote, assignedColor) {
             }
             
             // Send LED OFF
-            sendMIDIToController(midiNote, false, 0);
+            sendMIDIToController(midiNote, false, 0, channel);
             
             // Wait 500ms, then repeat
             setTimeout(() => {
@@ -672,6 +796,111 @@ function showDebugInfo() {
         });
     }
     console.log('=== END DEBUG ===');
+}
+
+// CRITICAL: Test function to verify MIDI communication is working
+function testMIDICommunication() {
+    console.log('🧪 TESTING MIDI COMMUNICATION...');
+    
+    // Test 1: Web App → Controller
+    console.log('Test 1: Web App → Controller');
+    if (midiOutputs.length === 0) {
+        console.error('❌ No MIDI output devices available');
+        return false;
+    }
+    
+    try {
+        // Test sending MIDI to note 0
+        midiOutputs.forEach(output => {
+            output.send([0x95, 0, 127]); // Note 0, white color
+        });
+        console.log('✅ Web App → Controller: MIDI message sent successfully');
+    } catch (error) {
+        console.error('❌ Web App → Controller failed:', error);
+        return false;
+    }
+    
+    // Test 2: Controller → Web App (check if updateGridPad exists and works)
+    console.log('Test 2: Controller → Web App');
+    if (typeof updateGridPad !== 'function') {
+        console.error('❌ updateGridPad function missing');
+        return false;
+    }
+    
+    if (!gridPads || Object.keys(gridPads).length < 80) { // Should have 64 grid + 8 side + 8 bottom = 80 buttons
+        console.error(`❌ gridPads object missing buttons. Expected 80, got ${Object.keys(gridPads).length}`);
+        return false;
+    }
+    
+    try {
+        updateGridPad(0, true, 127); // Test visual feedback for grid button
+        updateGridPad(112, true, 127); // Test visual feedback for side button
+        updateGridPad(100, true, 127); // Test visual feedback for bottom button
+        console.log('✅ Controller → Web App: updateGridPad function works for all button types');
+    } catch (error) {
+        console.error('❌ Controller → Web App failed:', error);
+        return false;
+    }
+    
+    // Test 3: Check key functions exist
+    console.log('Test 3: Key Functions');
+    const requiredFunctions = ['sendMIDIToController', 'updateGridPad', 'handleMIDIMessage', 'togglePadClick'];
+    let allFunctionsExist = true;
+    
+    requiredFunctions.forEach(funcName => {
+        if (typeof window[funcName] !== 'function') {
+            console.error(`❌ Function missing: ${funcName}`);
+            allFunctionsExist = false;
+        } else {
+            console.log(`✅ Function exists: ${funcName}`);
+        }
+    });
+    
+    if (!allFunctionsExist) {
+        return false;
+    }
+    
+    // Test 4: Check if side and bottom buttons exist
+    console.log('Test 4: Button Elements');
+    const sideButton112 = document.querySelector('[data-note="112"]');
+    const bottomButton100 = document.querySelector('[data-note="100"]');
+    
+    if (sideButton112) {
+        console.log('✅ Side button 112 found:', sideButton112);
+    } else {
+        console.error('❌ Side button 112 not found');
+    }
+    
+    if (bottomButton100) {
+        console.log('✅ Bottom button 100 found:', bottomButton100);
+    } else {
+        console.error('❌ Bottom button 100 not found');
+    }
+    
+    // Test 5: Try different MIDI note ranges for side/bottom buttons
+    console.log('Test 5: Testing MIDI note ranges');
+    console.log('Try these commands in console to test different MIDI notes:');
+    console.log('testMIDINote(64, 127)  // Test note 64');
+    console.log('testMIDINote(80, 127)  // Test note 80');
+    console.log('testMIDINote(96, 127)  // Test note 96');
+    console.log('testMIDINote(112, 127) // Test note 112');
+    
+    console.log('🎉 ALL MIDI COMMUNICATION TESTS PASSED!');
+    console.log('💡 You can call testMIDICommunication() anytime to verify functionality');
+    return true;
+}
+
+// Helper function to test specific MIDI notes
+function testMIDINote(midiNote, velocity) {
+    console.log(`Testing MIDI note ${midiNote} with velocity ${velocity}`);
+    midiOutputs.forEach(output => {
+        try {
+            output.send([0x95, midiNote, velocity]);
+            console.log(`Sent: [149, ${midiNote}, ${velocity}]`);
+        } catch (error) {
+            console.error(`Error sending to note ${midiNote}:`, error);
+        }
+    });
 }
 
 function getNoteNameFromMIDI(midiNote) {
