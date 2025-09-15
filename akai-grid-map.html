@@ -28,6 +28,8 @@
             </div>
             
             <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
+            <button id="saveStateBtn" class="save-btn">Save</button>
+            <button id="loadStateBtn" class="load-btn">Load</button>
             
             <div class="button-behavior-toggle" id="buttonBehaviorToggle" style="display: none;">
 
@@ -86,6 +88,19 @@
         
         <button id="clearBtn" class="clear-btn">Clear MIDI Log</button>
         <button id="testMIDIBtn" class="test-midi-btn" onclick="testMIDICommunication()">🧪 Test MIDI</button>
+    </div>
+    
+    <!-- Save State Popup Dialog -->
+    <div id="saveStateDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog-content">
+            <h3>Save Grid State</h3>
+            <p>Enter a name for this grid state:</p>
+            <input type="text" id="stateNameInput" placeholder="Enter state name..." maxlength="50">
+            <div class="dialog-buttons">
+                <button id="saveStateOk" class="dialog-btn ok-btn">OK</button>
+                <button id="saveStateCancel" class="dialog-btn cancel-btn">Cancel</button>
+            </div>
+        </div>
     </div>
     
     <script src="script.js"></script>

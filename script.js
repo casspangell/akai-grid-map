@@ -7,6 +7,12 @@ const deviceListEl = document.getElementById('deviceList');
 const midiLogEl = document.getElementById('midiLog');
 const clearBtn = document.getElementById('clearBtn');
 const clearGridBtn = document.getElementById('clearGridBtn');
+const saveStateBtn = document.getElementById('saveStateBtn');
+const saveStateDialog = document.getElementById('saveStateDialog');
+const stateNameInput = document.getElementById('stateNameInput');
+const saveStateOk = document.getElementById('saveStateOk');
+const saveStateCancel = document.getElementById('saveStateCancel');
+const loadStateBtn = document.getElementById('loadStateBtn');
 
 // MIDI Variables
 let midiOutputs = [];
@@ -58,6 +64,10 @@ clearBtn.addEventListener('click', () => {
     midiLogEl.innerHTML = '';
 });
 clearGridBtn.addEventListener('click', clearGrid);
+saveStateBtn.addEventListener('click', showSaveDialog);
+saveStateOk.addEventListener('click', saveGridState);
+saveStateCancel.addEventListener('click', hideSaveDialog);
+loadStateBtn.addEventListener('click', loadGridState);
 
 // Reset all pads button
 const resetAllBtn = document.getElementById('resetAllBtn');
@@ -745,6 +755,303 @@ function clearGrid() {
     });
     
     console.log('Grid visuals cleared - all pads reset to default state');
+}
+
+// Save State Functions
+function showSaveDialog() {
+    saveStateDialog.style.display = 'flex';
+    stateNameInput.value = '';
+    stateNameInput.focus();
+    
+    // Add Enter key support
+    stateNameInput.addEventListener('keydown', handleEnterKey);
+}
+
+function hideSaveDialog() {
+    saveStateDialog.style.display = 'none';
+    stateNameInput.removeEventListener('keydown', handleEnterKey);
+}
+
+function handleEnterKey(event) {
+    if (event.key === 'Enter') {
+        saveGridState();
+    } else if (event.key === 'Escape') {
+        hideSaveDialog();
+    }
+}
+
+async function saveGridState() {
+    const stateName = stateNameInput.value.trim();
+    
+    if (!stateName) {
+        alert('Please enter a name for the state');
+        return;
+    }
+    
+    // Collect all current button states
+    const gridState = {
+        name: stateName,
+        timestamp: new Date().toISOString(),
+        buttonStates: {},
+        gridPads: {},
+        circularButtons: {},
+        faders: {}
+    };
+    
+    // Save button states
+    Object.keys(buttonStates).forEach(midiNote => {
+        gridState.buttonStates[midiNote] = { ...buttonStates[midiNote] };
+    });
+    
+    // Save grid pad visual states
+    Object.keys(gridPads).forEach(midiNote => {
+        const pad = gridPads[midiNote];
+        gridState.gridPads[midiNote] = {
+            backgroundColor: pad.style.backgroundColor || '',
+            borderColor: pad.style.borderColor || '',
+            hasClickedClass: pad.classList.contains('clicked'),
+            hasActiveClass: pad.classList.contains('active')
+        };
+    });
+    
+    // Save circular button states
+    Object.keys(circularButtons).forEach(control => {
+        const button = circularButtons[control];
+        gridState.circularButtons[control] = {
+            backgroundColor: button.style.backgroundColor || '',
+            borderColor: button.style.borderColor || '',
+            hasClickedClass: button.classList.contains('clicked'),
+            hasActiveClass: button.classList.contains('active')
+        };
+    });
+    
+    // Save fader states
+    Object.keys(faders).forEach(control => {
+        const fader = faders[control];
+        gridState.faders[control] = {
+            value: fader.value,
+            knobTop: fader.knob.style.top
+        };
+    });
+    
+    // Save blinking buttons
+    gridState.blinkingButtons = Array.from(blinkingButtons);
+    
+    // Try to use File System Access API for local development
+    if ('showSaveFilePicker' in window) {
+        try {
+            const filename = `${stateName.replace(/[^a-zA-Z0-9]/g, '-')}.json`;
+            const fileHandle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{
+                    description: 'JSON files',
+                    accept: { 'application/json': ['.json'] }
+                }]
+            });
+            
+            const writable = await fileHandle.createWritable();
+            await writable.write(JSON.stringify(gridState, null, 2));
+            await writable.close();
+            
+            alert(`Grid state "${stateName}" saved successfully to ${fileHandle.name}!`);
+            console.log(`Grid state "${stateName}" saved to file system`);
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Error saving file:', error);
+                fallbackSaveMethod(gridState, stateName);
+            }
+        }
+    } else {
+        // Fallback for browsers without File System Access API
+        fallbackSaveMethod(gridState, stateName);
+    }
+    
+    hideSaveDialog();
+}
+
+function fallbackSaveMethod(gridState, stateName) {
+    // Create JSON for adding to saved-states.json
+    const jsonString = JSON.stringify(gridState, null, 2);
+    
+    // Create a formatted entry for the saved-states.json array
+    const stateEntry = `    ${jsonString}`;
+    
+    // Copy the state entry to clipboard for easy pasting
+    navigator.clipboard.writeText(stateEntry).then(() => {
+        alert(`Grid state "${stateName}" ready to save!\n\n✅ State JSON copied to clipboard\n\n📁 Open saved-states.json in your project folder\n📋 Add a comma after the last state (if any)\n📋 Paste the JSON content as a new array item\n💾 Save the file\n\nThis will add your state to the saved-states.json file.`);
+    }).catch(() => {
+        alert(`Grid state "${stateName}" ready!\n\n📁 Open saved-states.json in your project folder\n📋 Copy the JSON content from the console\n💾 Paste and save in the file`);
+        console.log('=== COPY THIS JSON TO saved-states.json ===');
+        console.log('Add this as a new item in the "savedStates" array:');
+        console.log(stateEntry);
+        console.log('=== END JSON ===');
+    });
+}
+
+// Load State Functions
+async function loadGridState() {
+    try {
+        // Check if File System Access API is available
+        if ('showOpenFilePicker' in window) {
+            const [fileHandle] = await window.showOpenFilePicker({
+                types: [{
+                    description: 'JSON files',
+                    accept: { 'application/json': ['.json'] }
+                }]
+            });
+            
+            const file = await fileHandle.getFile();
+            const content = await file.text();
+            
+            try {
+                const gridState = JSON.parse(content);
+                restoreGridState(gridState);
+                console.log(`Grid state "${gridState.name || 'Unknown'}" loaded successfully`);
+            } catch (parseError) {
+                alert('Error: Invalid JSON file format');
+                console.error('JSON parse error:', parseError);
+            }
+        } else {
+            // Fallback for browsers without File System Access API
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const gridState = JSON.parse(e.target.result);
+                            restoreGridState(gridState);
+                            console.log(`Grid state "${gridState.name || 'Unknown'}" loaded successfully`);
+                        } catch (parseError) {
+                            alert('Error: Invalid JSON file format');
+                            console.error('JSON parse error:', parseError);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+    } catch (error) {
+        if (error.name !== 'AbortError') {
+            console.error('Error loading file:', error);
+            alert('Error loading file. Please try again.');
+        }
+    }
+}
+
+function restoreGridState(gridState) {
+    // Clear current state first
+    clearGrid();
+    
+    // Restore button states
+    if (gridState.buttonStates) {
+        Object.keys(gridState.buttonStates).forEach(midiNote => {
+            buttonStates[midiNote] = { ...gridState.buttonStates[midiNote] };
+        });
+    }
+    
+    // Restore grid pad visual states
+    if (gridState.gridPads) {
+        Object.keys(gridState.gridPads).forEach(midiNote => {
+            const pad = gridPads[midiNote];
+            const padState = gridState.gridPads[midiNote];
+            
+            if (pad && padState) {
+                if (padState.backgroundColor) {
+                    pad.style.backgroundColor = padState.backgroundColor;
+                }
+                if (padState.borderColor) {
+                    pad.style.borderColor = padState.borderColor;
+                }
+                if (padState.hasClickedClass) {
+                    pad.classList.add('clicked');
+                }
+                if (padState.hasActiveClass) {
+                    pad.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Restore circular button states
+    if (gridState.circularButtons) {
+        Object.keys(gridState.circularButtons).forEach(control => {
+            const button = circularButtons[control];
+            const buttonState = gridState.circularButtons[control];
+            
+            if (button && buttonState) {
+                if (buttonState.backgroundColor) {
+                    button.style.backgroundColor = buttonState.backgroundColor;
+                }
+                if (buttonState.borderColor) {
+                    button.style.borderColor = buttonState.borderColor;
+                }
+                if (buttonState.hasClickedClass) {
+                    button.classList.add('clicked');
+                }
+                if (buttonState.hasActiveClass) {
+                    button.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Restore fader states
+    if (gridState.faders) {
+        Object.keys(gridState.faders).forEach(control => {
+            const fader = faders[control];
+            const faderState = gridState.faders[control];
+            
+            if (fader && faderState) {
+                fader.value = faderState.value;
+                fader.knob.style.top = faderState.knobTop;
+            }
+        });
+    }
+    
+    // Restore blinking buttons
+    if (gridState.blinkingButtons && Array.isArray(gridState.blinkingButtons)) {
+        gridState.blinkingButtons.forEach(midiNote => {
+            blinkingButtons.add(midiNote);
+            if (buttonStates[midiNote]) {
+                startBlinking(midiNote, buttonStates[midiNote].assignedColor);
+            }
+        });
+    }
+    
+    // Send MIDI commands to controller to restore LED states
+    Object.keys(buttonStates).forEach(midiNote => {
+        const buttonState = buttonStates[midiNote];
+        const pad = gridPads[midiNote];
+        
+        if (pad && buttonState) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            let ledColor;
+            
+            // Determine correct LED color for button type
+            if (channel === 0) {
+                if (midiNote >= 64 && midiNote <= 71) {
+                    ledColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNote >= 112 && midiNote <= 119) {
+                    ledColor = colorPalette.find(c => c.name === 'Green');
+                } else {
+                    ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+                }
+            } else {
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+            }
+            
+            if (buttonState.isOn && ledColor) {
+                sendMIDIToController(parseInt(midiNote), true, ledColor.velocity, channel);
+            }
+        }
+    });
+    
+    console.log(`Grid state "${gridState.name || 'Unknown'}" restored successfully`);
 }
 
 function resetAllPads() {
