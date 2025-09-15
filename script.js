@@ -483,11 +483,12 @@ function toggleButtonState(midiNote) {
     } else if (buttonState.behavior === 'blink') {
         // "Blink" behavior: Start/stop blinking when pressed
         if (blinkingButtons.has(midiNote)) {
-            // Stop blinking
+            // Stop blinking and return to solid color state
             blinkingButtons.delete(midiNote);
-            // Turn off LED
-            sendMIDIToController(midiNote, false, 0);
-            console.log(`Physical Controller: Stopped blinking button ${midiNote}`);
+            // Turn ON with assigned color (solid state)
+            const color = colorPalette.find(c => c.value === buttonState.assignedColor);
+            sendMIDIToController(midiNote, true, color.velocity);
+            console.log(`Physical Controller: Stopped blinking button ${midiNote}, now solid ${color.name}`);
         } else {
             // Start blinking
             blinkingButtons.add(midiNote);
