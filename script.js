@@ -61,11 +61,15 @@ clearGridBtn.addEventListener('click', clearGrid);
 
 // Reset all pads button
 const resetAllBtn = document.getElementById('resetAllBtn');
-resetAllBtn.addEventListener('click', resetAllPads);
+if (resetAllBtn) {
+    resetAllBtn.addEventListener('click', resetAllPads);
+}
 
 // Debug button
 const debugBtn = document.getElementById('debugBtn');
-debugBtn.addEventListener('click', showDebugInfo);
+if (debugBtn) {
+    debugBtn.addEventListener('click', showDebugInfo);
+}
 
 // Button behavior selection
 const buttonBehaviorRadios = document.querySelectorAll('input[name="buttonBehavior"]');
