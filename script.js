@@ -243,6 +243,9 @@ function handleMIDIMessage(message) {
         className = 'note-on';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${message.channel}`;
         
+        // Show visual feedback on web app grid
+        updateGridPad(message.note.number, true, message.velocity);
+        
         // Toggle button state if it has an assigned color
         toggleButtonState(message.note.number);
         
@@ -251,7 +254,8 @@ function handleMIDIMessage(message) {
         className = 'note-off';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Channel: ${message.channel}`;
         
-        // Note: We don't handle noteoff for toggling - only noteon triggers the toggle
+        // Show visual feedback on web app grid
+        updateGridPad(message.note.number, false, 0);
         
     } else if (message.type === 'controlchange') {
         messageType = 'Control Change';
