@@ -27,6 +27,33 @@
             <div class="color-options" id="colorOptions">
                 <!-- Color options will be generated here -->
             </div>
+            
+            <div class="button-behavior-toggle" id="buttonBehaviorToggle" style="display: none;">
+                <h4>Button Behavior:</h4>
+                <div class="behavior-options">
+                    <label class="behavior-option">
+                        <input type="radio" name="buttonBehavior" value="toggle" checked>
+                        <span class="behavior-label">
+                            <div class="behavior-preview toggle-preview"></div>
+                            <div class="behavior-text">
+                                <strong>Toggle</strong><br>
+                                <small>Can be turned ON/OFF</small>
+                            </div>
+                        </span>
+                    </label>
+                    <label class="behavior-option">
+                        <input type="radio" name="buttonBehavior" value="solid">
+                        <span class="behavior-label">
+                            <div class="behavior-preview solid-preview"></div>
+                            <div class="behavior-text">
+                                <strong>Solid</strong><br>
+                                <small>Always stays ON</small>
+                            </div>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            
             <button id="resetAllBtn" class="reset-btn">Reset All Pads</button>
             <button id="debugBtn" class="debug-btn">Debug Info</button>
         </div>

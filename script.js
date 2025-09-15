@@ -31,6 +31,7 @@ const faders = {};
 
 // Color palette - exact colors specified
 let selectedColor = 'white';
+let selectedButtonBehavior = 'toggle'; // 'toggle' or 'solid'e
 const colorPalette = [
     { name: 'White', value: 'white', css: '#FFFFFF', velocity: 3 },
     { name: 'Red', value: 'red', css: '#FF0000', velocity: 5 },
@@ -65,11 +66,28 @@ resetAllBtn.addEventListener('click', resetAllPads);
 const debugBtn = document.getElementById('debugBtn');
 debugBtn.addEventListener('click', showDebugInfo);
 
+// Button behavior selection
+const buttonBehaviorRadios = document.querySelectorAll('input[name="buttonBehavior"]');
+buttonBehaviorRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        selectedButtonBehavior = e.target.value;
+        console.log(`Selected button behavior: ${selectedButtonBehavior}`);
+    });
+});
+
 // Initialize the controller layout
 createColorPalette();
 createControllerGrid();
 createCircularButtons();
 createFaders();
+
+// Initialize button behavior toggle visibility
+const buttonBehaviorToggle = document.getElementById('buttonBehaviorToggle');
+if (selectedColor === 'off') {
+    buttonBehaviorToggle.style.display = 'none';
+} else {
+    buttonBehaviorToggle.style.display = 'block';
+}
 
 // MIDI Functions
 async function enableMIDI() {
@@ -165,6 +183,14 @@ function createColorPalette() {
             // Add selected class to clicked option
             colorOption.classList.add('selected');
             selectedColor = color.value;
+            
+            // Show/hide button behavior toggle based on color selection
+            const buttonBehaviorToggle = document.getElementById('buttonBehaviorToggle');
+            if (selectedColor === 'off') {
+                buttonBehaviorToggle.style.display = 'none';
+            } else {
+                buttonBehaviorToggle.style.display = 'block';
+            }
             
             console.log(`Selected color: ${color.name}`);
         });
@@ -400,10 +426,11 @@ function togglePadClick(pad) {
         return;
     }
     
-    // Assign color to button (this sets up the button for toggle behavior)
+    // Assign color to button (this sets up the button for the selected behavior)
     buttonStates[midiNote] = {
-        isOn: true, // Start in ON state
-        assignedColor: selectedColor
+        isOn: true, // Always start ON when assigned
+        assignedColor: selectedColor,
+        behavior: selectedButtonBehavior // Store the behavior type
     };
     
     // Apply visual styling to show assignment
@@ -431,20 +458,27 @@ function toggleButtonState(midiNote) {
         return;
     }
     
-    // Toggle the button state
-    buttonState.isOn = !buttonState.isOn;
-    
-    // Get the assigned color
-    const color = colorPalette.find(c => c.value === buttonState.assignedColor);
-    
-    if (buttonState.isOn) {
-        // Turn ON: Send LED with assigned color
-        sendMIDIToController(midiNote, true, color.velocity);
-        console.log(`Physical Controller: Toggled button ${midiNote} ON with ${color.name} color`);
-    } else {
-        // Turn OFF: Send LED off
-        sendMIDIToController(midiNote, false, 0);
-        console.log(`Physical Controller: Toggled button ${midiNote} OFF`);
+    // Handle behavior based on button type
+    if (buttonState.behavior === 'solid') {
+        // "Solid" behavior: Button stays ON when pressed (no toggle)
+        console.log(`Physical Controller: Button ${midiNote} pressed but behavior is "solid" - staying ON`);
+        return;
+    } else if (buttonState.behavior === 'toggle') {
+        // "Toggle" behavior: Toggle between ON and OFF
+        buttonState.isOn = !buttonState.isOn;
+        
+        // Get the assigned color
+        const color = colorPalette.find(c => c.value === buttonState.assignedColor);
+        
+        if (buttonState.isOn) {
+            // Turn ON: Send LED with assigned color
+            sendMIDIToController(midiNote, true, color.velocity);
+            console.log(`Physical Controller: Toggled button ${midiNote} ON with ${color.name} color`);
+        } else {
+            // Turn OFF: Send LED off
+            sendMIDIToController(midiNote, false, 0);
+            console.log(`Physical Controller: Toggled button ${midiNote} OFF`);
+        }
     }
 }
 
@@ -549,6 +583,7 @@ function resetAllPads() {
 function showDebugInfo() {
     console.log('=== DEBUG INFO ===');
     console.log('Selected Color:', selectedColor);
+    console.log('Selected Button Behavior:', selectedButtonBehavior);
     console.log('MIDI Outputs:', midiOutputs.length);
     console.log('Active Grid Pads:', Object.keys(gridPads).length);
     console.log('Clicked Pads:', Object.values(gridPads).filter(pad => pad.classList.contains('clicked')).length);
@@ -560,7 +595,7 @@ function showDebugInfo() {
     if (Object.keys(buttonStates).length > 0) {
         console.log('Button State Details:');
         Object.entries(buttonStates).forEach(([midiNote, state]) => {
-            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'}`);
+            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'} (${state.behavior})`);
         });
     }
     

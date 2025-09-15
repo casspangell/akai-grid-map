@@ -425,3 +425,12 @@ h1 {
 .debug-btn:active {
     transform: translateY(0);
 }
+
+.behavior-options {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
