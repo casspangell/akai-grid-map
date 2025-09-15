@@ -1,4 +1,4 @@
-# 🎛️ MIDI Controller Reader
+# Akai APCmini Grid Map
 
 A web application for controlling MIDI controller LEDs with a clean, modern interface.
 

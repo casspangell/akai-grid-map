@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Saira', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #1a1a1a;
     margin: 0;
     padding: 20px;
@@ -177,6 +177,23 @@ h1 {
     background: linear-gradient(135deg, #ee5a52, #e74c3c);
     border-color: #e74c3c;
     transform: translateY(-2px);
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
+    flex-wrap: wrap;
+}
+
+.button-container .clear-btn,
+.button-container .save-btn,
+.button-container .load-btn {
+    margin-top: 0;
+    flex: 1;
+    min-width: 80px;
 }
 
 /* Dialog Styles */

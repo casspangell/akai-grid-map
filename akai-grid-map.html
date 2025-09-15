@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎛️ MIDI Controller Reader</title>
+    <title>Akai APCmini Grid Map</title>
     <script src="https://cdn.jsdelivr.net/npm/webmidi@3.1.0/dist/iife/webmidi.iife.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>🎛️ MIDI Controller Reader</h1>
+        <h1>Akai APCmini Grid Map</h1>
         
         <div class="status" id="status">
             Click "Enable MIDI" to start reading your MIDI controller
@@ -27,9 +30,11 @@
                 <!-- Color options will be generated here -->
             </div>
             
-            <button id="clearGridBtn" class="clear-btn">Clear Grid Visuals</button>
-            <button id="saveStateBtn" class="save-btn">Save</button>
-            <button id="loadStateBtn" class="load-btn">Load</button>
+            <div class="button-container">
+                <button id="clearGridBtn" class="clear-btn">Reset</button>
+                <button id="saveStateBtn" class="save-btn">Save</button>
+                <button id="loadStateBtn" class="load-btn">Load</button>
+            </div>
             
             <div class="button-behavior-toggle" id="buttonBehaviorToggle" style="display: none;">
 
