@@ -434,3 +434,12 @@ h1 {
     margin-bottom: 15px;
 }
 
+.blink-preview {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+

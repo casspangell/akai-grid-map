@@ -15,7 +15,8 @@ let midiOutputs = [];
 // [0,0] = bottom-left = note 0, reading left to right, bottom to top
 const gridPads = {};
 const controllerNotes = {};
-const buttonStates = {}; // Track toggle states: { midiNote: { isOn: boolean, assignedColor: string } }
+const buttonStates = {}; // Track toggle states: { midiNote: { isOn: boolean, assignedColor: string, behavior: string } }
+const blinkingButtons = new Set(); // Track which buttons are currently blinking
 
 // Generate 8x8 grid mapping: [0,0] to [7,7] with notes 0-63
 for (let row = 0; row < 8; row++) {
@@ -31,7 +32,7 @@ const faders = {};
 
 // Color palette - exact colors specified
 let selectedColor = 'white';
-let selectedButtonBehavior = 'toggle'; // 'toggle' or 'solid'e
+let selectedButtonBehavior = 'toggle'; // 'toggle' or 'solid'
 const colorPalette = [
     { name: 'White', value: 'white', css: '#FFFFFF', velocity: 3 },
     { name: 'Red', value: 'red', css: '#FF0000', velocity: 5 },
@@ -479,7 +480,54 @@ function toggleButtonState(midiNote) {
             sendMIDIToController(midiNote, false, 0);
             console.log(`Physical Controller: Toggled button ${midiNote} OFF`);
         }
+    } else if (buttonState.behavior === 'blink') {
+        // "Blink" behavior: Start/stop blinking when pressed
+        if (blinkingButtons.has(midiNote)) {
+            // Stop blinking
+            blinkingButtons.delete(midiNote);
+            // Turn off LED
+            sendMIDIToController(midiNote, false, 0);
+            console.log(`Physical Controller: Stopped blinking button ${midiNote}`);
+        } else {
+            // Start blinking
+            blinkingButtons.add(midiNote);
+            startBlinking(midiNote, buttonState.assignedColor);
+            console.log(`Physical Controller: Started blinking button ${midiNote}`);
+        }
     }
+}
+
+function startBlinking(midiNote, assignedColor) {
+    const color = colorPalette.find(c => c.value === assignedColor);
+    
+    function blinkCycle() {
+        if (!blinkingButtons.has(midiNote)) {
+            return; // Stop blinking if button was removed from set
+        }
+        
+        // Send LED ON
+        sendMIDIToController(midiNote, true, color.velocity);
+        
+        // Wait 500ms, then turn OFF
+        setTimeout(() => {
+            if (!blinkingButtons.has(midiNote)) {
+                return; // Check again in case blinking was stopped
+            }
+            
+            // Send LED OFF
+            sendMIDIToController(midiNote, false, 0);
+            
+            // Wait 500ms, then repeat
+            setTimeout(() => {
+                if (blinkingButtons.has(midiNote)) {
+                    blinkCycle(); // Continue blinking
+                }
+            }, 500);
+        }, 500);
+    }
+    
+    // Start the blinking cycle
+    blinkCycle();
 }
 
 function toggleButtonClick(button) {
@@ -577,7 +625,10 @@ function resetAllPads() {
         delete buttonStates[midiNote];
     });
     
-    console.log('All pads reset - LEDs turned off and button states cleared');
+    // Stop all blinking buttons
+    blinkingButtons.clear();
+    
+    console.log('All pads reset - LEDs turned off, button states cleared, and blinking stopped');
 }
 
 function showDebugInfo() {
@@ -588,6 +639,7 @@ function showDebugInfo() {
     console.log('Active Grid Pads:', Object.keys(gridPads).length);
     console.log('Clicked Pads:', Object.values(gridPads).filter(pad => pad.classList.contains('clicked')).length);
     console.log('Button States:', Object.keys(buttonStates).length);
+    console.log('Blinking Buttons:', blinkingButtons.size);
     console.log('WebMidi.js Version:', WebMidi ? 'Available' : 'Not Available');
     console.log('Current Timestamp:', new Date().toLocaleTimeString());
     
@@ -595,7 +647,8 @@ function showDebugInfo() {
     if (Object.keys(buttonStates).length > 0) {
         console.log('Button State Details:');
         Object.entries(buttonStates).forEach(([midiNote, state]) => {
-            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'} (${state.behavior})`);
+            const blinkStatus = blinkingButtons.has(parseInt(midiNote)) ? ' - BLINKING' : '';
+            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'} (${state.behavior})${blinkStatus}`);
         });
     }
     
