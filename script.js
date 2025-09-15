@@ -752,10 +752,31 @@ function clearGrid() {
     // Stop all blinking buttons
     blinkingButtons.clear();
     
-    // Turn off all LEDs on controller
-    Object.keys(gridPads).forEach(midiNote => {
-        sendMIDIToController(parseInt(midiNote), false, 0);
+    // Turn off all LEDs on controller with correct channels
+    // Add small delays to ensure MIDI commands are processed properly
+    Object.keys(gridPads).forEach((midiNote, index) => {
+        const pad = gridPads[midiNote];
+        if (pad) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            // Add small delay between MIDI commands to prevent overwhelming the controller
+            setTimeout(() => {
+                sendMIDIToController(parseInt(midiNote), false, 0, channel);
+            }, index * 2); // 2ms delay between each command
+        }
     });
+    
+    // Also send a second pass after a short delay to ensure all LEDs are off
+    setTimeout(() => {
+        Object.keys(gridPads).forEach((midiNote, index) => {
+            const pad = gridPads[midiNote];
+            if (pad) {
+                const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+                setTimeout(() => {
+                    sendMIDIToController(parseInt(midiNote), false, 0, channel);
+                }, index * 1); // 1ms delay for second pass
+            }
+        });
+    }, 200); // Wait 200ms before second pass
     
     // Remove active states from circular buttons
     Object.values(circularButtons).forEach(button => {
