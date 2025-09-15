@@ -510,7 +510,7 @@ h1 {
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
-    margin-bottom: 15px;
+    padding-bottom: 30px;
 }
 
 .color-option {
@@ -620,7 +620,7 @@ h1 {
 .behavior-label {
     display: flex;
     align-items: center;
-    gap: 12px;
+    text-align: center;
     padding: 12px 16px;
     background: #2a2a2a;
     border: 1px solid #3a3a3a;
@@ -655,17 +655,7 @@ h1 {
 
 .behavior-text {
     flex: 1;
-    text-align: left;
-}
-
-.behavior-text strong {
-    font-size: 13px;
-    font-weight: 500;
-    display: block;
-    margin: 0;
-    padding: 0;
-    line-height: 1.2;
-    color: inherit;
+    text-align: center;
 }
 
 .behavior-text small {
