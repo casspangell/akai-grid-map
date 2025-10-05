@@ -75,26 +75,8 @@ clearGridBtn.addEventListener('click', clearGrid);
 saveStateBtn.addEventListener('click', showSaveDialog);
 saveStateOk.addEventListener('click', saveGridState);
 saveStateCancel.addEventListener('click', hideSaveDialog);
-loadStateBtn.addEventListener('click', loadGridState);
+loadStateBtn.addEventListener('click', () => loadGridState());
 
-// Dialogue button event listeners
-const dialogue1Btn = document.getElementById('dialogue1Btn');
-const dialogue2Btn = document.getElementById('dialogue2Btn');
-const dialogue3Btn = document.getElementById('dialogue3Btn');
-const dialogue4Btn = document.getElementById('dialogue4Btn');
-
-if (dialogue1Btn) {
-    dialogue1Btn.addEventListener('click', () => loadDialogueState('dialogue1.json'));
-}
-if (dialogue2Btn) {
-    dialogue2Btn.addEventListener('click', () => loadDialogueState('dialogue2.json'));
-}
-if (dialogue3Btn) {
-    dialogue3Btn.addEventListener('click', () => loadDialogueState('dialogue3.json'));
-}
-if (dialogue4Btn) {
-    dialogue4Btn.addEventListener('click', () => loadDialogueState('dialogue4.json'));
-}
 
 // Reset all pads button
 const resetAllBtn = document.getElementById('resetAllBtn');
@@ -979,8 +961,44 @@ function fallbackSaveMethod(gridState, stateName) {
 }
 
 // Load State Functions
-async function loadGridState() {
+async function loadGridState(filename = null) {
     try {
+        // If filename is provided, load that specific file
+        if (filename) {
+            try {
+                console.log(filename);
+                
+                // Check if filename is a string (file path) or FileSystemFileHandle
+                let file, content;
+                if (typeof filename === 'string') {
+                    // For string filenames, fetch the file
+                    const response = await fetch(filename);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${filename}: ${response.statusText}`);
+                    }
+                    content = await response.text();
+                } else {
+                    // For FileSystemFileHandle objects
+                    file = await filename.getFile();
+                    content = await file.text();
+                }
+                
+                try {
+                    const gridState = JSON.parse(content);
+                    restoreGridState(gridState);
+                    console.log(`Grid state "${gridState.name || 'Unknown'}" loaded successfully`);
+                } catch (parseError) {
+                    alert('Error: Invalid JSON file format');
+                    console.error('JSON parse error:', parseError);
+                }
+                return;
+            } catch (fetchError) {
+                console.error(`Error loading file ${filename}:`, fetchError);
+                alert(`Error loading file ${filename}. Please check the filename and try again.`);
+                return;
+            }
+        }
+
         // Check if File System Access API is available
         if ('showOpenFilePicker' in window) {
             const [fileHandle] = await window.showOpenFilePicker({
@@ -1001,29 +1019,6 @@ async function loadGridState() {
                 alert('Error: Invalid JSON file format');
                 console.error('JSON parse error:', parseError);
             }
-        } else {
-            // Fallback for browsers without File System Access API
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const gridState = JSON.parse(e.target.result);
-                            restoreGridState(gridState);
-                            console.log(`Grid state "${gridState.name || 'Unknown'}" loaded successfully`);
-                        } catch (parseError) {
-                            alert('Error: Invalid JSON file format');
-                            console.error('JSON parse error:', parseError);
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            input.click();
         }
     } catch (error) {
         if (error.name !== 'AbortError') {

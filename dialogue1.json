@@ -1,6 +1,6 @@
 {
-  "name": "d",
-  "timestamp": "2025-10-05T01:03:45.607Z",
+  "name": "e",
+  "timestamp": "2025-10-05T21:04:38.673Z",
   "buttonStates": {
     "24": {
       "isOn": true,
@@ -14,7 +14,7 @@
     },
     "31": {
       "isOn": true,
-      "assignedColor": "green",
+      "assignedColor": "purple",
       "behavior": "toggle"
     },
     "32": {
@@ -99,8 +99,8 @@
     },
     "48": {
       "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "solid"
+      "assignedColor": "yellow",
+      "behavior": "toggle"
     },
     "49": {
       "isOn": true,
@@ -366,8 +366,8 @@
       "hasActiveClass": false
     },
     "31": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
       "hasClickedClass": true,
       "hasActiveClass": false
     },
@@ -468,8 +468,8 @@
       "hasActiveClass": false
     },
     "48": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
+      "backgroundColor": "rgb(255, 255, 0)",
+      "borderColor": "rgb(255, 255, 0)",
       "hasClickedClass": true,
       "hasActiveClass": false
     },
