@@ -1,0 +1,673 @@
+{
+  "name": "d",
+  "timestamp": "2025-10-05T01:03:45.607Z",
+  "buttonStates": {
+    "24": {
+      "isOn": true,
+      "assignedColor": "pink",
+      "behavior": "toggle"
+    },
+    "30": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "31": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "toggle"
+    },
+    "32": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "33": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "34": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "35": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "36": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "37": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "38": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "39": {
+      "isOn": true,
+      "assignedColor": "blue",
+      "behavior": "toggle"
+    },
+    "40": {
+      "isOn": true,
+      "assignedColor": "purple",
+      "behavior": "toggle"
+    },
+    "41": {
+      "isOn": true,
+      "assignedColor": "purple",
+      "behavior": "toggle"
+    },
+    "42": {
+      "isOn": true,
+      "assignedColor": "purple",
+      "behavior": "toggle"
+    },
+    "43": {
+      "isOn": true,
+      "assignedColor": "purple",
+      "behavior": "toggle"
+    },
+    "44": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "toggle"
+    },
+    "45": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "toggle"
+    },
+    "46": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "toggle"
+    },
+    "47": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "solid"
+    },
+    "48": {
+      "isOn": true,
+      "assignedColor": "pink",
+      "behavior": "solid"
+    },
+    "49": {
+      "isOn": true,
+      "assignedColor": "pink",
+      "behavior": "solid"
+    },
+    "52": {
+      "isOn": true,
+      "assignedColor": "orange",
+      "behavior": "toggle"
+    },
+    "53": {
+      "isOn": true,
+      "assignedColor": "orange",
+      "behavior": "solid"
+    },
+    "54": {
+      "isOn": true,
+      "assignedColor": "orange",
+      "behavior": "toggle"
+    },
+    "55": {
+      "isOn": true,
+      "assignedColor": "orange",
+      "behavior": "toggle"
+    },
+    "56": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "57": {
+      "isOn": true,
+      "assignedColor": "pink",
+      "behavior": "toggle"
+    },
+    "58": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "59": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "60": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "61": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "solid"
+    },
+    "62": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "63": {
+      "isOn": true,
+      "assignedColor": "red",
+      "behavior": "toggle"
+    },
+    "112": {
+      "isOn": false,
+      "assignedColor": "orange",
+      "behavior": "toggle"
+    },
+    "119": {
+      "isOn": true,
+      "assignedColor": "pink",
+      "behavior": "toggle"
+    }
+  },
+  "gridPads": {
+    "0": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "1": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "2": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "3": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "4": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "5": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "6": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "7": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "8": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "9": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "10": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "11": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "12": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "13": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "14": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "15": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "16": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "17": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "18": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "19": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "20": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "21": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "22": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "23": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "24": {
+      "backgroundColor": "rgb(255, 0, 255)",
+      "borderColor": "rgb(255, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "25": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "26": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "27": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "28": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "29": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "30": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "31": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "32": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "33": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "34": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "35": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "36": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "37": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "38": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "39": {
+      "backgroundColor": "rgb(0, 0, 255)",
+      "borderColor": "rgb(0, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "40": {
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "41": {
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "42": {
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "43": {
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "44": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "45": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "46": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "47": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "48": {
+      "backgroundColor": "rgb(255, 0, 255)",
+      "borderColor": "rgb(255, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "49": {
+      "backgroundColor": "rgb(255, 0, 255)",
+      "borderColor": "rgb(255, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "50": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "51": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "52": {
+      "backgroundColor": "rgb(204, 68, 0)",
+      "borderColor": "rgb(204, 68, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "53": {
+      "backgroundColor": "rgb(204, 68, 0)",
+      "borderColor": "rgb(204, 68, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "54": {
+      "backgroundColor": "rgb(204, 68, 0)",
+      "borderColor": "rgb(204, 68, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "55": {
+      "backgroundColor": "rgb(204, 68, 0)",
+      "borderColor": "rgb(204, 68, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "56": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "57": {
+      "backgroundColor": "rgb(255, 0, 255)",
+      "borderColor": "rgb(255, 0, 255)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "58": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "59": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "60": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "61": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "62": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "63": {
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "100": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "101": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "102": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "103": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "104": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "105": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "106": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "107": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "112": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    },
+    "113": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "114": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "115": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "116": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "117": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "118": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "119": {
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
+      "hasActiveClass": false
+    }
+  },
+  "circularButtons": {
+    "Number1": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    }
+  },
+  "faders": {},
+  "blinkingButtons": []
+}

@@ -77,6 +77,25 @@ saveStateOk.addEventListener('click', saveGridState);
 saveStateCancel.addEventListener('click', hideSaveDialog);
 loadStateBtn.addEventListener('click', loadGridState);
 
+// Dialogue button event listeners
+const dialogue1Btn = document.getElementById('dialogue1Btn');
+const dialogue2Btn = document.getElementById('dialogue2Btn');
+const dialogue3Btn = document.getElementById('dialogue3Btn');
+const dialogue4Btn = document.getElementById('dialogue4Btn');
+
+if (dialogue1Btn) {
+    dialogue1Btn.addEventListener('click', () => loadDialogueState('dialogue1.json'));
+}
+if (dialogue2Btn) {
+    dialogue2Btn.addEventListener('click', () => loadDialogueState('dialogue2.json'));
+}
+if (dialogue3Btn) {
+    dialogue3Btn.addEventListener('click', () => loadDialogueState('dialogue3.json'));
+}
+if (dialogue4Btn) {
+    dialogue4Btn.addEventListener('click', () => loadDialogueState('dialogue4.json'));
+}
+
 // Reset all pads button
 const resetAllBtn = document.getElementById('resetAllBtn');
 if (resetAllBtn) {
@@ -1011,6 +1030,56 @@ async function loadGridState() {
             console.error('Error loading file:', error);
             alert('Error loading file. Please try again.');
         }
+    }
+}
+
+// Load Dialogue State Function
+async function loadDialogueState(filename) {
+    try {
+        console.log(`🎭 Loading dialogue state: ${filename}`);
+        
+        // Fetch the dialogue JSON file
+        const response = await fetch(filename);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const content = await response.text();
+        
+        try {
+            const dialogueState = JSON.parse(content);
+            restoreGridState(dialogueState);
+            console.log(`🎭 Dialogue state "${dialogueState.name || filename}" loaded successfully`);
+            
+            // Show success message to user
+            statusEl.className = 'status connected';
+            statusTextEl.textContent = `Dialogue "${dialogueState.name || filename}" loaded successfully!`;
+            
+            // Clear the status message after 3 seconds
+            setTimeout(() => {
+                statusEl.className = 'status connected';
+                statusTextEl.textContent = 'Connected to MIDI devices';
+            }, 3000);
+            
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            alert(`Error: Invalid JSON format in ${filename}`);
+        }
+        
+    } catch (error) {
+        console.error(`Error loading dialogue file ${filename}:`, error);
+        alert(`Error loading ${filename}. Please make sure the file exists and is accessible.`);
+        
+        // Show error status
+        statusEl.className = 'status disconnected';
+        statusTextEl.textContent = `Failed to load ${filename}`;
+        
+        // Clear the error status after 3 seconds
+        setTimeout(() => {
+            statusEl.className = 'status connected';
+            statusTextEl.textContent = 'Connected to MIDI devices';
+        }, 3000);
     }
 }
 
