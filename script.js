@@ -273,6 +273,20 @@ function handleMIDIMessage(message) {
         className = 'note-on';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${message.channel}`;
         
+        // Special handler for MIDI note 100
+        if (message.note.number === 100) {
+            console.log("Loading dialogue1.json...");
+            loadDialogueState('dialogue1.json');
+            return; // Exit early to prevent normal button processing
+        }
+        
+        // Special handler for MIDI note 101
+        if (message.note.number === 101) {
+            console.log("Loading dialogue2.json...");
+            loadDialogueState('dialogue2.json');
+            return; // Exit early to prevent normal button processing
+        }
+        
         // Show visual feedback on web app grid
         updateGridPad(message.note.number, true, message.velocity);
         
@@ -769,6 +783,26 @@ function clearGridVisuals() {
     });
 }
 
+function resetAllMIDILEDs() {
+    // Turn off all LEDs on the MIDI controller
+    console.log('🔄 Resetting all MIDI controller LEDs...');
+    
+    // Turn off all grid pads (notes 0-63)
+    for (let midiNote = 0; midiNote < 64; midiNote++) {
+        sendMIDIToController(midiNote, false, 0);
+    }
+    
+    // Turn off circular buttons (notes 100-107, 112-119)
+    for (let midiNote = 100; midiNote <= 107; midiNote++) {
+        sendMIDIToController(midiNote, false, 0);
+    }
+    for (let midiNote = 112; midiNote <= 119; midiNote++) {
+        sendMIDIToController(midiNote, false, 0);
+    }
+    
+    console.log('✅ All MIDI controller LEDs reset - waiting for restoration...');
+}
+
 function clearGrid() {
     // Remove active states from all grid pads
     Object.values(gridPads).forEach(pad => {
@@ -1081,6 +1115,9 @@ async function loadDialogueState(filename) {
 function restoreGridState(gridState) {
     console.log(`🔄 Loading JSON state: "${gridState.name || 'Unknown'}" - Turning on corresponding buttons on Akai pad...`);
     
+    // Reset all MIDI controller LEDs first
+    resetAllMIDILEDs();
+    
     // Clear current state first (but don't send MIDI commands to avoid conflicts)
     clearGridVisuals();
     
@@ -1166,9 +1203,12 @@ function restoreGridState(gridState) {
         
         // Send MIDI commands to controller to restore LED states
         // Add delay between commands to prevent overwhelming the controller
+        console.log(`🎯 Processing ${Object.keys(buttonStates).length} button states for restoration...`);
         Object.keys(buttonStates).forEach((midiNote, index) => {
             const buttonState = buttonStates[midiNote];
             const pad = gridPads[midiNote];
+            
+            console.log(`🔍 Processing button ${midiNote}: isOn=${buttonState.isOn}, assignedColor=${buttonState.assignedColor}, behavior=${buttonState.behavior}`);
             
             if (pad && buttonState) {
                 const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
@@ -1199,8 +1239,12 @@ function restoreGridState(gridState) {
                     } else if (!buttonState.isOn) {
                         // If button should be OFF, send white color (as per toggle behavior)
                         const whiteColor = colorPalette.find(c => c.name === 'White');
-                        sendMIDIToController(parseInt(midiNote), true, whiteColor.velocity, channel);
-                        console.log(`⚪ Restored button ${midiNote} to WHITE color (OFF state) on channel ${channel}`);
+                        if (whiteColor) {
+                            sendMIDIToController(parseInt(midiNote), true, whiteColor.velocity, channel);
+                            console.log(`⚪ Restored button ${midiNote} to WHITE color (OFF state) on channel ${channel} - velocity: ${whiteColor.velocity}`);
+                        } else {
+                            console.error(`❌ White color not found in palette for button ${midiNote}`);
+                        }
                     }
                 }, index * 20); // Increased to 20ms delay between each command
             }
