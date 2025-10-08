@@ -1067,8 +1067,9 @@ async function loadDialogueState(filename) {
     try {
         console.log(`🎭 Loading dialogue state: ${filename}`);
         
-        // Fetch the dialogue JSON file
-        const response = await fetch(filename);
+        // Fetch the dialogue JSON file with cache-busting to always get the latest version
+        const cacheBuster = `?t=${new Date().getTime()}`;
+        const response = await fetch(filename + cacheBuster);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
