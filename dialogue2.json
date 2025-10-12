@@ -1,215 +1,91 @@
 {
-  "name": "dialogue-2",
-  "timestamp": "2025-10-08T02:58:23.229Z",
+  "name": "f",
+  "timestamp": "2025-10-12T20:42:51.826Z",
   "buttonStates": {
-    "0": {
-      "isOn": true,
-      "assignedColor": "white",
+    "40": {
+      "assignedColor": "purple",
       "behavior": "toggle"
     },
-    "1": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "2": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "3": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "4": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "5": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "6": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "7": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "12": {
-      "isOn": true,
+    "48": {
       "assignedColor": "pink",
       "behavior": "toggle"
     },
-    "17": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "18": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "19": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "20": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
-    },
-    "21": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "22": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "24": {
-      "isOn": true,
+    "56": {
       "assignedColor": "red",
       "behavior": "toggle"
     },
-    "28": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
-    },
-    "29": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "31": {
-      "isOn": true,
+    "57": {
       "assignedColor": "red",
       "behavior": "toggle"
     },
-    "32": {
-      "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
-    },
-    "36": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
-    },
-    "37": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
-    },
-    "42": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
-    },
-    "43": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
-    },
-    "44": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
-    },
-    "45": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
-    },
-    "52": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
-    },
-    "63": {
-      "isOn": true,
-      "assignedColor": "white",
+    "58": {
+      "assignedColor": "red",
       "behavior": "toggle"
     },
     "100": {
-      "isOn": true,
       "assignedColor": "white",
       "behavior": "toggle"
     },
     "101": {
-      "isOn": true,
       "assignedColor": "white",
       "behavior": "toggle"
     },
-    "115": {
-      "isOn": true,
+    "113": {
       "assignedColor": "white",
       "behavior": "toggle"
     },
-    "117": {
-      "isOn": true,
+    "119": {
       "assignedColor": "white",
       "behavior": "toggle"
     }
   },
   "gridPads": {
     "0": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "1": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "2": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "3": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "4": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "5": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "6": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "7": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "8": {
@@ -237,9 +113,9 @@
       "hasActiveClass": false
     },
     "12": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "13": {
@@ -267,39 +143,39 @@
       "hasActiveClass": false
     },
     "17": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "18": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "19": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "20": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "21": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "22": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "23": {
@@ -309,9 +185,9 @@
       "hasActiveClass": false
     },
     "24": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "25": {
@@ -333,15 +209,15 @@
       "hasActiveClass": false
     },
     "28": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "29": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "30": {
@@ -351,15 +227,15 @@
       "hasActiveClass": false
     },
     "31": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "32": {
-      "backgroundColor": "rgb(255, 255, 255)",
-      "borderColor": "rgb(255, 255, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "33": {
@@ -381,15 +257,15 @@
       "hasActiveClass": false
     },
     "36": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "37": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "38": {
@@ -405,9 +281,9 @@
       "hasActiveClass": false
     },
     "40": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(84, 0, 255)",
+      "borderColor": "rgb(84, 0, 255)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "41": {
@@ -417,27 +293,27 @@
       "hasActiveClass": false
     },
     "42": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "43": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "44": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "45": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "46": {
@@ -453,9 +329,9 @@
       "hasActiveClass": false
     },
     "48": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 0, 255)",
+      "borderColor": "rgb(255, 0, 255)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "49": {
@@ -477,9 +353,9 @@
       "hasActiveClass": false
     },
     "52": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "53": {
@@ -501,21 +377,21 @@
       "hasActiveClass": false
     },
     "56": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "57": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "58": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "59": {
@@ -543,20 +419,20 @@
       "hasActiveClass": false
     },
     "63": {
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
+      "hasActiveClass": false
+    },
+    "100": {
       "backgroundColor": "rgb(255, 255, 255)",
       "borderColor": "rgb(255, 255, 255)",
       "hasClickedClass": true,
       "hasActiveClass": false
     },
-    "100": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
-      "hasActiveClass": false
-    },
     "101": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
+      "backgroundColor": "rgb(255, 255, 255)",
+      "borderColor": "rgb(255, 255, 255)",
       "hasClickedClass": true,
       "hasActiveClass": false
     },
@@ -603,9 +479,9 @@
       "hasActiveClass": false
     },
     "113": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 255, 255)",
+      "borderColor": "rgb(255, 255, 255)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "114": {
@@ -615,9 +491,9 @@
       "hasActiveClass": false
     },
     "115": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "116": {
@@ -627,9 +503,9 @@
       "hasActiveClass": false
     },
     "117": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "118": {
@@ -639,9 +515,9 @@
       "hasActiveClass": false
     },
     "119": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 255, 255)",
+      "borderColor": "rgb(255, 255, 255)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     }
   },
