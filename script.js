@@ -25,6 +25,9 @@ const gridPads = {};
 const controllerNotes = {};
 const buttonStates = {}; // Track toggle states: { midiNote: { isOn: boolean, assignedColor: string, behavior: string } }
 const blinkingButtons = new Set(); // Track which buttons are currently blinking
+const pendingConfirmations = {}; // Track pending web->controller state changes awaiting confirmation
+const midiMessageQueue = []; // Queue for MIDI messages to prevent overwhelming the controller
+let isProcessingQueue = false; // Flag to track if queue is being processed
 
 // Generate 8x8 grid mapping: [0,0] to [7,7] with notes 0-63
 for (let row = 0; row < 8; row++) {
@@ -71,7 +74,9 @@ findMidiBtn.addEventListener('click', enableMIDI);
 clearBtn.addEventListener('click', () => {
     midiLogEl.innerHTML = '';
 });
-clearGridBtn.addEventListener('click', clearGrid);
+clearGridBtn.addEventListener('click', async () => {
+    await clearGrid();
+});
 saveStateBtn.addEventListener('click', showSaveDialog);
 saveStateOk.addEventListener('click', saveGridState);
 saveStateCancel.addEventListener('click', hideSaveDialog);
@@ -81,7 +86,9 @@ loadStateBtn.addEventListener('click', () => loadGridState());
 // Reset all pads button
 const resetAllBtn = document.getElementById('resetAllBtn');
 if (resetAllBtn) {
-    resetAllBtn.addEventListener('click', resetAllPads);
+    resetAllBtn.addEventListener('click', async () => {
+        await resetAllPads();
+    });
 }
 
 // Debug button
@@ -233,33 +240,151 @@ function createColorPalette() {
     });
 }
 
-function sendMIDIToController(midiNote, isOn, velocity = 127, channel = 5) {
+// Async function to send MIDI messages (non-blocking)
+async function sendMIDIToController(midiNote, isOn, velocity = 127, channel = 5) {
     if (midiOutputs.length === 0) {
         console.log('No MIDI output devices available');
         return;
     }
     
-    // Use WebMidi.js to send MIDI messages for APC Mini MK2
-    midiOutputs.forEach(output => {
-        try {
-            if (isOn && velocity > 0) {
-                // Calculate the correct MIDI status byte based on channel
-                const statusByte = 0x90 + channel; // Note On + Channel
-                const colorVelocity = velocity;
-                
-                // Send Note On message with correct channel
-                output.send([statusByte, midiNote, colorVelocity]);
-                console.log(`APC Mini MK2: Sent solid LED - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${channel} (0x${channel.toString(16).toUpperCase()})`);
-            } else {
-                // Send Note On with velocity 0 to turn off LED
-                const statusByte = 0x90 + channel; // Note On + Channel
-                output.send([statusByte, midiNote, 0]);
-                console.log(`APC Mini MK2: Sent LED Off - Note: ${midiNote}, Channel: ${channel}, Velocity: 0`);
+    // Check for duplicate commands in queue (same note, same state)
+    // Remove duplicates to prevent redundant messages
+    const existingIndex = midiMessageQueue.findIndex(cmd => 
+        cmd.midiNote === midiNote && 
+        cmd.isOn === isOn && 
+        cmd.velocity === velocity && 
+        cmd.channel === channel
+    );
+    
+    if (existingIndex !== -1) {
+        // Update timestamp of existing command instead of adding duplicate
+        midiMessageQueue[existingIndex].timestamp = Date.now();
+        console.log(`🔄 Updated existing queue command for note ${midiNote} instead of duplicating`);
+        return;
+    }
+    
+    // Add to queue instead of sending immediately
+    const midiCommand = {
+        midiNote,
+        isOn,
+        velocity,
+        channel,
+        timestamp: Date.now()
+    };
+    
+    midiMessageQueue.push(midiCommand);
+    console.log(`📝 Queued MIDI message for note ${midiNote} (Queue size: ${midiMessageQueue.length})`);
+    
+    // Start processing queue if not already running
+    if (!isProcessingQueue) {
+        processMessageQueue();
+    }
+}
+
+// Process MIDI message queue asynchronously
+async function processMessageQueue() {
+    if (isProcessingQueue) return;
+    isProcessingQueue = true;
+    
+    while (midiMessageQueue.length > 0) {
+        const command = midiMessageQueue.shift();
+        
+        // Send the actual MIDI message with retry logic
+        let retries = 0;
+        let success = false;
+        
+        while (!success && retries < 3) {
+            try {
+                await sendMIDIImmediate(command.midiNote, command.isOn, command.velocity, command.channel);
+                success = true;
+            } catch (error) {
+                retries++;
+                console.warn(`⚠️ MIDI send failed for note ${command.midiNote}, retry ${retries}/3`);
+                if (retries < 3) {
+                    await sleep(20); // Wait 20ms before retry
+                }
             }
-        } catch (error) {
-            console.error(`Error sending MIDI to ${output.name}:`, error);
         }
-    });
+        
+        if (!success) {
+            console.error(`❌ Failed to send MIDI message for note ${command.midiNote} after 3 attempts`);
+        }
+        
+        // Longer delay between messages to prevent overwhelming the controller
+        // APC Mini MK2 can be sensitive to rapid message bursts
+        await sleep(15); // Increased to 15ms delay between messages
+    }
+    
+    isProcessingQueue = false;
+}
+
+// Helper function for async sleep
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Immediate MIDI send function (called by queue processor)
+async function sendMIDIImmediate(midiNote, isOn, velocity = 127, channel = 5) {
+    // Validate MIDI outputs are still available
+    if (!midiOutputs || midiOutputs.length === 0) {
+        throw new Error('No MIDI outputs available');
+    }
+    
+    // Send the message 5 times for reliability (quintuple-bang)
+    const BANG_COUNT = 5;
+    const BANG_DELAY = 3; // ms between bangs
+    
+    for (let bang = 0; bang < BANG_COUNT; bang++) {
+        // Use WebMidi.js to send MIDI messages for APC Mini MK2
+        const promises = midiOutputs.map(output => {
+            return new Promise((resolve, reject) => {
+                try {
+                    // Check if output is still valid
+                    if (!output || typeof output.send !== 'function') {
+                        reject(new Error(`Invalid MIDI output: ${output ? output.name : 'null'}`));
+                        return;
+                    }
+                    
+                    if (isOn && velocity > 0) {
+                        // Calculate the correct MIDI status byte based on channel
+                        const statusByte = 0x90 + channel; // Note On + Channel
+                        const colorVelocity = velocity;
+                        
+                        // Send Note On message with correct channel
+                        output.send([statusByte, midiNote, colorVelocity]);
+                        if (bang === 0) {
+                            console.log(`✅ APC Mini MK2: Sent solid LED (x${BANG_COUNT}) - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${channel} (0x${channel.toString(16).toUpperCase()})`);
+                        }
+                    } else {
+                        // Send Note On with velocity 0 to turn off LED
+                        const statusByte = 0x90 + channel; // Note On + Channel
+                        output.send([statusByte, midiNote, 0]);
+                        if (bang === 0) {
+                            console.log(`✅ APC Mini MK2: Sent LED Off (x${BANG_COUNT}) - Note: ${midiNote}, Channel: ${channel}, Velocity: 0`);
+                        }
+                    }
+                    
+                    // Small delay to ensure the message is sent before resolving
+                    setTimeout(() => resolve(), 1);
+                } catch (error) {
+                    console.error(`❌ Error sending MIDI to ${output ? output.name : 'unknown'}:`, error);
+                    reject(error);
+                }
+            });
+        });
+        
+        try {
+            await Promise.all(promises);
+        } catch (error) {
+            console.error(`❌ Failed to send MIDI message for note ${midiNote} (bang ${bang + 1}/${BANG_COUNT}):`, error);
+            throw error; // Re-throw for retry logic
+        }
+        
+        // Wait between bangs (except after the last one)
+        if (bang < BANG_COUNT - 1) {
+            await sleep(BANG_DELAY);
+        }
+    }
 }
 
 function handleMIDIMessage(message) {
@@ -272,6 +397,33 @@ function handleMIDIMessage(message) {
         messageType = 'Note On';
         className = 'note-on';
         messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${message.channel}`;
+        
+        // Check if this is an echo from a web-initiated command
+        if (pendingConfirmations[message.note.number]) {
+            const pending = pendingConfirmations[message.note.number];
+            
+            if (pending.type === 'echo' && Math.abs(Date.now() - pending.timestamp) < 500) {
+                // This is likely an echo from our own command - ignore it
+                console.log(`🔄 Ignoring controller echo for MIDI Note ${message.note.number} (web-initiated)`);
+                delete pendingConfirmations[message.note.number];
+                
+                // Show brief visual feedback but don't toggle state
+                updateGridPad(message.note.number, true, message.velocity);
+                
+                // Still log it
+                const logEntry = document.createElement('div');
+                logEntry.className = `midi-message ${className}`;
+                logEntry.innerHTML = `
+                    <strong>[${timestamp}] ${messageType}</strong> <small>(echo)</small><br>
+                    ${messageText}<br>
+                    <small>Raw: [${message.rawData.join(', ')}]</small>
+                `;
+                midiLogEl.appendChild(logEntry);
+                midiLogEl.scrollTop = midiLogEl.scrollHeight;
+                
+                return;
+            }
+        }
         
         // Special handler for MIDI note 100
         if (message.note.number === 100) {
@@ -286,6 +438,9 @@ function handleMIDIMessage(message) {
             loadDialogueState('dialogue2.json');
             return; // Exit early to prevent normal button processing
         }
+        
+        // This is a physical button press from the controller
+        console.log(`🎮 Physical controller button press detected: MIDI Note ${message.note.number}`);
         
         // Show visual feedback on web app grid
         updateGridPad(message.note.number, true, message.velocity);
@@ -370,9 +525,9 @@ function createControllerGrid() {
             // Store reference
             gridPads[midiNote] = pad;
             
-            // Add click event listener
-            pad.addEventListener('click', () => {
-                togglePadClick(pad);
+            // Add click event listener (async to prevent blocking)
+            pad.addEventListener('click', async () => {
+                await togglePadClick(pad);
             });
             
             gridEl.appendChild(pad);
@@ -394,9 +549,9 @@ function createControllerGrid() {
         // Store reference in gridPads
         gridPads[midiNote] = button;
         
-        // Add click event listener
-        button.addEventListener('click', () => {
-            togglePadClick(button);
+        // Add click event listener (async to prevent blocking)
+        button.addEventListener('click', async () => {
+            await togglePadClick(button);
         });
         
         sideButtonsEl.appendChild(button);
@@ -424,9 +579,9 @@ function createControllerGrid() {
         // Store reference in gridPads
         gridPads[midiNote] = button;
         
-        // Add click event listener to the inner button
-        button.addEventListener('click', () => {
-            togglePadClick(button);
+        // Add click event listener to the inner button (async to prevent blocking)
+        button.addEventListener('click', async () => {
+            await togglePadClick(button);
         });
     }
 }
@@ -447,9 +602,9 @@ function createCircularButtons() {
         
         circularButtons[`Number${i}`] = button;
         
-        // Add click event listener
-        button.addEventListener('click', () => {
-            toggleButtonClick(button);
+        // Add click event listener (async to prevent blocking)
+        button.addEventListener('click', async () => {
+            await toggleButtonClick(button);
         });
         
         numberButtonsEl.appendChild(button);
@@ -466,9 +621,9 @@ function createCircularButtons() {
         
         circularButtons[`Letter${letter}`] = button;
         
-        // Add click event listener
-        button.addEventListener('click', () => {
-            toggleButtonClick(button);
+        // Add click event listener (async to prevent blocking)
+        button.addEventListener('click', async () => {
+            await toggleButtonClick(button);
         });
         
         letterButtonsEl.appendChild(button);
@@ -507,7 +662,7 @@ function createFaders() {
     }
 }
 
-function togglePadClick(pad) {
+async function togglePadClick(pad) {
     const midiNote = parseInt(pad.getAttribute('data-note'));
     const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5; // Default to Channel 5 for grid buttons
     const row = pad.getAttribute('data-row');
@@ -523,8 +678,8 @@ function togglePadClick(pad) {
         // Remove button state tracking
         delete buttonStates[midiNote];
         console.log(`Web App: Removed color assignment from pad [${coordRow},${col}] - MIDI Note: ${midiNote}`);
-        // Send Note Off to controller
-        sendMIDIToController(midiNote, false, 0, channel);
+        // Send Note Off to controller (async, won't block)
+        await sendMIDIToController(midiNote, false, 0, channel);
         return;
     }
     
@@ -566,10 +721,33 @@ function togglePadClick(pad) {
     pad.classList.add('clicked');
     pad.style.backgroundColor = displayColor.css;
     pad.style.borderColor = displayColor.css;
+    
+    // Add sending indicator
+    pad.classList.add('sending');
     console.log(`Web App: Assigned ${selectedColor} → ${displayColor.name} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (immediately ON)`);
     
     // Immediately turn ON the LED on the physical controller (use LED color)
-    sendMIDIToController(midiNote, true, ledColor.velocity, channel);
+    // This is async and won't block other button clicks
+    await sendMIDIToController(midiNote, true, ledColor.velocity, channel);
+    
+    // Remove sending indicator after message is queued
+    setTimeout(() => {
+        pad.classList.remove('sending');
+    }, 100);
+    
+    // Store pending confirmation to handle controller echo
+    pendingConfirmations[midiNote] = {
+        type: 'echo',
+        timestamp: Date.now(),
+        expectedVelocity: ledColor.velocity
+    };
+    
+    // Clear the pending echo after 500ms (controller echoes happen quickly)
+    setTimeout(() => {
+        if (pendingConfirmations[midiNote] && pendingConfirmations[midiNote].type === 'echo') {
+            delete pendingConfirmations[midiNote];
+        }
+    }, 500);
 }
 
 function toggleButtonState(midiNote) {
@@ -706,7 +884,7 @@ function startBlinking(midiNote, assignedColor) {
     blinkCycle();
 }
 
-function toggleButtonClick(button) {
+async function toggleButtonClick(button) {
     const control = button.getAttribute('data-control');
     const midiNote = parseInt(button.getAttribute('data-note'));
     
@@ -720,9 +898,9 @@ function toggleButtonClick(button) {
         button.style.backgroundColor = '';
         button.style.borderColor = '';
         console.log(`Web App: Turned off button ${control} with Off color`);
-        // Send Note Off to controller (turn off LED)
+        // Send Note Off to controller (turn off LED, async)
         if (midiNote !== null && !isNaN(midiNote)) {
-            sendMIDIToController(midiNote, false, 0);
+            await sendMIDIToController(midiNote, false, 0);
         }
         return;
     }
@@ -734,9 +912,9 @@ function toggleButtonClick(button) {
         button.style.backgroundColor = '';
         button.style.borderColor = '';
         console.log(`Web App: Released button ${control}`);
-        // Send Note Off to controller (turn off LED)
+        // Send Note Off to controller (turn off LED, async)
         if (midiNote !== null && !isNaN(midiNote)) {
-            sendMIDIToController(midiNote, false, 0);
+            await sendMIDIToController(midiNote, false, 0);
         }
     } else {
         button.classList.add('clicked');
@@ -744,9 +922,9 @@ function toggleButtonClick(button) {
         button.style.backgroundColor = color.css;
         button.style.borderColor = color.css;
         console.log(`Web App: Pressed button ${control} with ${color.name}`);
-        // Send Note On to controller (turn on LED with selected color)
+        // Send Note On to controller (turn on LED with selected color, async)
         if (midiNote !== null && !isNaN(midiNote)) {
-            sendMIDIToController(midiNote, true, color.velocity);
+            await sendMIDIToController(midiNote, true, color.velocity);
         }
     }
 }
@@ -783,30 +961,53 @@ function clearGridVisuals() {
     });
 }
 
-function resetAllMIDILEDs() {
+async function resetAllMIDILEDs() {
     // Turn off all LEDs on the MIDI controller
     console.log('🔄 Resetting all MIDI controller LEDs...');
     
-    // Turn off all grid pads (notes 0-63)
+    // Clear the message queue first to prevent conflicts
+    console.log(`🗑️ Clearing ${midiMessageQueue.length} pending messages from queue`);
+    midiMessageQueue.length = 0;
+    
+    // Wait a moment for any in-progress message to complete
+    await sleep(50);
+    
+    // Turn off all grid pads (notes 0-63) with channel 5
     for (let midiNote = 0; midiNote < 64; midiNote++) {
-        sendMIDIToController(midiNote, false, 0);
+        await sendMIDIToController(midiNote, false, 0, 5);
     }
     
-    // Turn off circular buttons (notes 100-107, 112-119)
+    // Turn off bottom buttons (notes 100-107) with channel 0
     for (let midiNote = 100; midiNote <= 107; midiNote++) {
-        sendMIDIToController(midiNote, false, 0);
-    }
-    for (let midiNote = 112; midiNote <= 119; midiNote++) {
-        sendMIDIToController(midiNote, false, 0);
+        await sendMIDIToController(midiNote, false, 0, 0);
     }
     
-    console.log('✅ All MIDI controller LEDs reset - waiting for restoration...');
+    // Turn off side buttons (notes 112-119) with channel 0
+    for (let midiNote = 112; midiNote <= 119; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 0);
+    }
+    
+    // Wait for all queued messages to be sent
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(10);
+    }
+    
+    console.log('✅ All MIDI controller LEDs reset complete!');
 }
 
-function clearGrid() {
+async function clearGrid() {
+    console.log('🧹 Starting grid clear...');
+    
+    // Clear the message queue first to prevent conflicts
+    console.log(`🗑️ Clearing ${midiMessageQueue.length} pending messages from queue`);
+    midiMessageQueue.length = 0;
+    
+    // Wait a moment for any in-progress message to complete
+    await sleep(50);
+    
     // Remove active states from all grid pads
     Object.values(gridPads).forEach(pad => {
-        pad.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high', 'clicked');
+        pad.classList.remove('active', 'velocity-low', 'velocity-medium', 'velocity-high', 'clicked', 'sending');
         // Clear visual styling (background and border colors)
         pad.style.backgroundColor = '';
         pad.style.borderColor = '';
@@ -820,31 +1021,19 @@ function clearGrid() {
     // Stop all blinking buttons
     blinkingButtons.clear();
     
+    // Clear pending confirmations
+    Object.keys(pendingConfirmations).forEach(midiNote => {
+        delete pendingConfirmations[midiNote];
+    });
+    
     // Turn off all LEDs on controller with correct channels
-    // Add small delays to ensure MIDI commands are processed properly
-    Object.keys(gridPads).forEach((midiNote, index) => {
+    for (const midiNote of Object.keys(gridPads)) {
         const pad = gridPads[midiNote];
         if (pad) {
             const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
-            // Add small delay between MIDI commands to prevent overwhelming the controller
-            setTimeout(() => {
-                sendMIDIToController(parseInt(midiNote), false, 0, channel);
-            }, index * 2); // 2ms delay between each command
+            await sendMIDIToController(parseInt(midiNote), false, 0, channel);
         }
-    });
-    
-    // Also send a second pass after a short delay to ensure all LEDs are off
-    setTimeout(() => {
-        Object.keys(gridPads).forEach((midiNote, index) => {
-            const pad = gridPads[midiNote];
-            if (pad) {
-                const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
-                setTimeout(() => {
-                    sendMIDIToController(parseInt(midiNote), false, 0, channel);
-                }, index * 1); // 1ms delay for second pass
-            }
-        });
-    }, 200); // Wait 200ms before second pass
+    }
     
     // Remove active states from circular buttons
     Object.values(circularButtons).forEach(button => {
@@ -860,7 +1049,12 @@ function clearGrid() {
         fader.value = 64;
     });
     
-    console.log('Grid visuals cleared - all pads reset to default state');
+    // Wait for all queued messages to be sent
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(10);
+    }
+    
+    console.log('✅ Grid cleared - all pads reset to default state');
 }
 
 // Save State Functions
@@ -1280,15 +1474,34 @@ function restoreGridState(gridState) {
     }
 }
 
-function resetAllPads() {
+async function resetAllPads() {
+    console.log('🔄 Resetting all pads...');
+    
+    // Clear the message queue first to prevent conflicts
+    console.log(`🗑️ Clearing ${midiMessageQueue.length} pending messages from queue`);
+    midiMessageQueue.length = 0;
+    
+    // Wait a moment for any in-progress message to complete
+    await sleep(50);
+    
     // Turn off all grid pad LEDs on controller
     for (let midiNote = 0; midiNote < 64; midiNote++) {
-        sendMIDIToController(midiNote, false, 0);
+        await sendMIDIToController(midiNote, false, 0, 5);
+    }
+    
+    // Turn off bottom buttons (notes 100-107) with channel 0
+    for (let midiNote = 100; midiNote <= 107; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 0);
+    }
+    
+    // Turn off side buttons (notes 112-119) with channel 0
+    for (let midiNote = 112; midiNote <= 119; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 0);
     }
     
     // Remove clicked states from all web app pads
     Object.values(gridPads).forEach(pad => {
-        pad.classList.remove('clicked');
+        pad.classList.remove('clicked', 'sending');
         // Reset to default background color
         pad.style.backgroundColor = '';
         pad.style.borderColor = '';
@@ -1310,7 +1523,17 @@ function resetAllPads() {
     // Stop all blinking buttons
     blinkingButtons.clear();
     
-    console.log('All pads reset - LEDs turned off, button states cleared, and blinking stopped');
+    // Clear pending confirmations
+    Object.keys(pendingConfirmations).forEach(midiNote => {
+        delete pendingConfirmations[midiNote];
+    });
+    
+    // Wait for all queued messages to be sent
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(10);
+    }
+    
+    console.log('✅ All pads reset - LEDs turned off, button states cleared, and blinking stopped');
 }
 
 function showDebugInfo() {

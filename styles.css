@@ -920,3 +920,74 @@ h2 {
     }
 }
 
+/* Pending Confirmation State */
+.pending-confirmation {
+    position: relative;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.pending-confirmation::after {
+    content: '⏱';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 10px;
+    color: #ffd93d;
+    animation: fadeInOut 1s ease-in-out infinite;
+}
+
+/* Sending State - for when MIDI message is being sent */
+.sending {
+    position: relative;
+    animation: sending-pulse 0.3s ease-in-out;
+}
+
+.sending::before {
+    content: '📡';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    color: #51cf66;
+    animation: spin-once 0.3s linear;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 217, 61, 0.6);
+    }
+}
+
+@keyframes sending-pulse {
+    0% {
+        box-shadow: 0 0 5px rgba(81, 207, 102, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(81, 207, 102, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(81, 207, 102, 0.3);
+    }
+}
+
+@keyframes spin-once {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
