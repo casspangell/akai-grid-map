@@ -23,7 +23,7 @@ let midiOutputs = [];
 // [0,0] = bottom-left = note 0, reading left to right, bottom to top
 const gridPads = {};
 const controllerNotes = {};
-const buttonStates = {}; // Track button assignments: { midiNote: { assignedColor: string, behavior: string } }
+const buttonStates = {}; // Track toggle states: { midiNote: { isOn: boolean, assignedColor: string, behavior: string } }
 const blinkingButtons = new Set(); // Track which buttons are currently blinking
 const pendingConfirmations = {}; // Track pending web->controller state changes awaiting confirmation
 const midiMessageQueue = []; // Queue for MIDI messages to prevent overwhelming the controller
@@ -77,9 +77,7 @@ clearBtn.addEventListener('click', () => {
 clearGridBtn.addEventListener('click', async () => {
     await clearGrid();
 });
-saveStateBtn.addEventListener('click', showSaveDialog);
-saveStateOk.addEventListener('click', saveGridState);
-saveStateCancel.addEventListener('click', hideSaveDialog);
+saveStateBtn.addEventListener('click', saveGridState);
 loadStateBtn.addEventListener('click', () => loadGridState());
 
 
@@ -330,8 +328,8 @@ async function sendMIDIImmediate(midiNote, isOn, velocity = 127, channel = 5) {
         throw new Error('No MIDI outputs available');
     }
     
-    // Send the message 5 times for reliability (quintuple-bang)
-    const BANG_COUNT = 5;
+    // Send the message 1 time (single-bang)
+    const BANG_COUNT = 1;
     const BANG_DELAY = 3; // ms between bangs
     
     for (let bang = 0; bang < BANG_COUNT; bang++) {
@@ -712,6 +710,7 @@ async function togglePadClick(pad) {
     
     // Assign color to button (store the original selected color for behavior tracking)
     buttonStates[midiNote] = {
+        isOn: true, // Always start ON when assigned
         assignedColor: selectedColor, // Store original selection
         behavior: selectedButtonBehavior // Store the behavior type
     };
@@ -725,20 +724,14 @@ async function togglePadClick(pad) {
     pad.classList.add('sending');
     console.log(`Web App: Assigned ${selectedColor} → ${displayColor.name} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (immediately ON)`);
     
-    // Send multiple times at web-click level for extra reliability
-    // Each queued message will be sent with 5 bangs, so this gives us 3 x 5 = 15 total sends
-    const WEB_CLICK_REPEATS = 3;
+    // Immediately turn ON the LED on the physical controller (use LED color)
+    // This is async and won't block other button clicks
+    await sendMIDIToController(midiNote, true, ledColor.velocity, channel);
     
-    for (let i = 0; i < WEB_CLICK_REPEATS; i++) {
-        await sendMIDIToController(midiNote, true, ledColor.velocity, channel);
-    }
-    
-    // Remove sending indicator after messages are queued
+    // Remove sending indicator after message is queued
     setTimeout(() => {
         pad.classList.remove('sending');
     }, 100);
-    
-    console.log(`📡 Queued ${WEB_CLICK_REPEATS} web-click messages (${WEB_CLICK_REPEATS} x 5 bangs = ${WEB_CLICK_REPEATS * 5} total sends) for note ${midiNote}`);
     
     // Store pending confirmation to handle controller echo
     pendingConfirmations[midiNote] = {
@@ -771,10 +764,44 @@ function toggleButtonState(midiNote) {
     }
     
     // Handle behavior based on button type
-    if (buttonState.behavior === 'solid' || buttonState.behavior === 'toggle') {
-        // "Solid" and "Toggle" behavior: Button stays in assigned color (no state changes)
-        console.log(`Physical Controller: Button ${midiNote} pressed - staying at assigned color (behavior: ${buttonState.behavior})`);
+    if (buttonState.behavior === 'solid') {
+        // "Solid" behavior: Button stays ON when pressed (no toggle)
+        console.log(`Physical Controller: Button ${midiNote} pressed but behavior is "solid" - staying ON`);
         return;
+    } else if (buttonState.behavior === 'toggle') {
+        // "Toggle" behavior: Toggle between ON and OFF
+        buttonState.isOn = !buttonState.isOn;
+        
+        // Get the channel and determine correct LED color for single-color buttons
+        const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+        let ledColor;
+        
+        if (channel === 0) {
+            if (midiNote >= 100 && midiNote <= 107) {
+                // Bottom buttons (Track Buttons) - Force RED
+                ledColor = colorPalette.find(c => c.name === 'Red');
+            } else if (midiNote >= 112 && midiNote <= 119) {
+                // Side buttons (Scene Launch) - Force GREEN
+                ledColor = colorPalette.find(c => c.name === 'Green');
+            } else {
+                // Fallback for other Channel 0 buttons
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+            }
+        } else {
+            // Grid buttons (Channel 5) - Use assigned color (RGB LEDs)
+            ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+        }
+        
+        if (buttonState.isOn) {
+            // Turn ON: Send LED with correct color for button type
+            sendMIDIToController(midiNote, true, ledColor.velocity, channel);
+            console.log(`Physical Controller: Toggled button ${midiNote} ON with ${ledColor.name} color`);
+        } else {
+            // Turn OFF: Send white color instead of turning off completely
+            const whiteColor = colorPalette.find(c => c.name === 'White');
+            sendMIDIToController(midiNote, true, whiteColor.velocity, channel);
+            console.log(`Physical Controller: Toggled button ${midiNote} to WHITE color`);
+        }
     } else if (buttonState.behavior === 'blink') {
         // "Blink" behavior: Start/stop blinking when pressed
         if (blinkingButtons.has(midiNote)) {
@@ -933,37 +960,69 @@ function clearGridVisuals() {
 }
 
 async function resetAllMIDILEDs() {
-    // Turn off all LEDs on the MIDI controller
-    console.log('🔄 Resetting all MIDI controller LEDs...');
+    // Turn off all LEDs on the MIDI controller - COMPREHENSIVE RESET
+    console.log('🔄 Starting COMPREHENSIVE reset of all MIDI controller LEDs...');
     
     // Clear the message queue first to prevent conflicts
     console.log(`🗑️ Clearing ${midiMessageQueue.length} pending messages from queue`);
     midiMessageQueue.length = 0;
     
     // Wait a moment for any in-progress message to complete
-    await sleep(50);
+    await sleep(150);
     
-    // Turn off all grid pads (notes 0-63) with channel 5
+    // FIRST PASS - Turn off all grid pads (notes 0-63) with channel 5
+    console.log('🔄 First pass: Turning off all 64 grid pads...');
     for (let midiNote = 0; midiNote < 64; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 5);
+        // Small delay between queueing commands
+        if (midiNote % 8 === 7) await sleep(10); // Pause every 8 buttons
     }
     
     // Turn off bottom buttons (notes 100-107) with channel 0
+    console.log('🔄 Turning off 8 bottom buttons...');
     for (let midiNote = 100; midiNote <= 107; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 0);
     }
     
     // Turn off side buttons (notes 112-119) with channel 0
+    console.log('🔄 Turning off 8 side buttons...');
     for (let midiNote = 112; midiNote <= 119; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 0);
     }
     
     // Wait for all queued messages to be sent
+    console.log('⏳ Waiting for first pass to complete...');
     while (isProcessingQueue || midiMessageQueue.length > 0) {
-        await sleep(10);
+        await sleep(20);
     }
     
-    console.log('✅ All MIDI controller LEDs reset complete!');
+    // Extra wait to ensure controller has processed first pass
+    console.log('⏳ Waiting for controller to process first pass...');
+    await sleep(200);
+    
+    // SECOND PASS - Ensure everything is really off
+    console.log('🔄 Second pass: Double-checking all buttons are off...');
+    for (let midiNote = 0; midiNote < 64; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 5);
+    }
+    for (let midiNote = 100; midiNote <= 107; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 0);
+    }
+    for (let midiNote = 112; midiNote <= 119; midiNote++) {
+        await sendMIDIToController(midiNote, false, 0, 0);
+    }
+    
+    // Wait for all second pass messages to be sent
+    console.log('⏳ Waiting for second pass to complete...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    
+    // Final wait to ensure controller has processed everything
+    console.log('⏳ Final wait for controller processing...');
+    await sleep(200);
+    
+    console.log('✅ COMPREHENSIVE reset complete - all 80 buttons OFF!');
 }
 
 async function clearGrid() {
@@ -1052,16 +1111,9 @@ function handleEnterKey(event) {
 }
 
 async function saveGridState() {
-    const stateName = stateNameInput.value.trim();
-    
-    if (!stateName) {
-        alert('Please enter a name for the state');
-        return;
-    }
-    
     // Collect all current button states
     const gridState = {
-        name: stateName,
+        name: '', // Will be set from filename
         timestamp: new Date().toISOString(),
         buttonStates: {},
         gridPads: {},
@@ -1111,33 +1163,35 @@ async function saveGridState() {
     // Try to use File System Access API for local development
     if ('showSaveFilePicker' in window) {
         try {
-            const filename = `${stateName.replace(/[^a-zA-Z0-9]/g, '-')}.json`;
             const fileHandle = await window.showSaveFilePicker({
-                suggestedName: filename,
+                suggestedName: 'grid-state.json',
                 types: [{
                     description: 'JSON files',
                     accept: { 'application/json': ['.json'] }
                 }]
             });
             
+            // Use the filename (without extension) as the state name
+            const fileName = fileHandle.name.replace('.json', '');
+            gridState.name = fileName;
+            
             const writable = await fileHandle.createWritable();
             await writable.write(JSON.stringify(gridState, null, 2));
             await writable.close();
             
-            alert(`Grid state "${stateName}" saved successfully to ${fileHandle.name}!`);
-            console.log(`Grid state "${stateName}" saved to file system`);
+            alert(`Grid state saved successfully to ${fileHandle.name}!`);
+            console.log(`Grid state saved to file system: ${fileHandle.name}`);
         } catch (error) {
             if (error.name !== 'AbortError') {
                 console.error('Error saving file:', error);
-                fallbackSaveMethod(gridState, stateName);
+                alert('Error saving file. Please try again.');
             }
         }
     } else {
         // Fallback for browsers without File System Access API
-        fallbackSaveMethod(gridState, stateName);
+        alert('File System Access API not supported. Please use a modern browser (Chrome, Edge, etc.)');
+        console.error('File System Access API not available');
     }
-    
-    hideSaveDialog();
 }
 
 function fallbackSaveMethod(gridState, stateName) {
@@ -1278,11 +1332,16 @@ async function loadDialogueState(filename) {
     }
 }
 
-function restoreGridState(gridState) {
+async function restoreGridState(gridState) {
     console.log(`🔄 Loading JSON state: "${gridState.name || 'Unknown'}" - Turning on corresponding buttons on Akai pad...`);
     
-    // Reset all MIDI controller LEDs first
-    resetAllMIDILEDs();
+    // Reset all MIDI controller LEDs first and WAIT for completion
+    await resetAllMIDILEDs();
+    console.log('✅ Reset complete, waiting for controller to process...');
+    
+    // Extra wait to ensure controller has processed all OFF commands
+    await sleep(200);
+    console.log('✅ Ready to restore state...');
     
     // Clear current state first (but don't send MIDI commands to avoid conflicts)
     clearGridVisuals();
@@ -1290,37 +1349,60 @@ function restoreGridState(gridState) {
     // Restore button states
     if (gridState.buttonStates) {
         Object.keys(gridState.buttonStates).forEach(midiNote => {
-            buttonStates[midiNote] = { 
-                assignedColor: gridState.buttonStates[midiNote].assignedColor,
-                behavior: gridState.buttonStates[midiNote].behavior
-            };
-            console.log(`🔄 Restored button ${midiNote} with color ${gridState.buttonStates[midiNote].assignedColor} and behavior ${gridState.buttonStates[midiNote].behavior}`);
+            buttonStates[midiNote] = { ...gridState.buttonStates[midiNote] };
         });
     }
     
-    // Restore grid pad visual states - always show assigned color (not white/off state)
-    if (gridState.gridPads) {
+    // Restore grid pad visual states
+    // If gridPads is empty or doesn't exist, derive visual state from buttonStates
+    if (gridState.gridPads && Object.keys(gridState.gridPads).length > 0) {
         Object.keys(gridState.gridPads).forEach(midiNote => {
             const pad = gridPads[midiNote];
             const padState = gridState.gridPads[midiNote];
-            const buttonState = buttonStates[midiNote];
             
-            if (pad && padState && buttonState) {
-                // Get the assigned color from buttonStates (not the saved visual state which might be white)
-                const assignedColor = colorPalette.find(c => c.value === buttonState.assignedColor);
-                
-                if (assignedColor) {
-                    // Always apply the assigned color (not white/off state)
-                    pad.style.backgroundColor = assignedColor.css;
-                    pad.style.borderColor = assignedColor.css;
-                    console.log(`🎨 Set visual color for button ${midiNote} to ${assignedColor.name} (overriding saved state)`);
+            if (pad && padState) {
+                if (padState.backgroundColor) {
+                    pad.style.backgroundColor = padState.backgroundColor;
                 }
-                
+                if (padState.borderColor) {
+                    pad.style.borderColor = padState.borderColor;
+                }
                 if (padState.hasClickedClass) {
                     pad.classList.add('clicked');
                 }
                 if (padState.hasActiveClass) {
                     pad.classList.add('active');
+                }
+            }
+        });
+    } else {
+        // Derive visual state from buttonStates
+        console.log('📝 Deriving visual state from buttonStates...');
+        Object.keys(buttonStates).forEach(midiNote => {
+            const pad = gridPads[midiNote];
+            const buttonState = buttonStates[midiNote];
+            
+            if (pad && buttonState && buttonState.isOn && buttonState.assignedColor !== 'off') {
+                // Determine the correct display color based on button type
+                let displayColor;
+                const midiNoteNum = parseInt(midiNote);
+                
+                if (midiNoteNum >= 100 && midiNoteNum <= 107) {
+                    // Bottom buttons - Force RED (single-color LEDs)
+                    displayColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNoteNum >= 112 && midiNoteNum <= 119) {
+                    // Side buttons - Force GREEN (single-color LEDs)
+                    displayColor = colorPalette.find(c => c.name === 'Green');
+                } else {
+                    // Grid buttons - Use assigned color (RGB LEDs)
+                    displayColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+                }
+                
+                if (displayColor) {
+                    pad.style.backgroundColor = displayColor.css;
+                    pad.style.borderColor = displayColor.css;
+                    pad.classList.add('clicked');
+                    console.log(`🎨 Set visual for button ${midiNote} to ${displayColor.name}`);
                 }
             }
         });
@@ -1373,68 +1455,149 @@ function restoreGridState(gridState) {
     }
     
     // Wait a moment for any previous MIDI commands to complete, then restore LED states
-    setTimeout(() => {
-        console.log('🎯 Starting to restore LED states to physical controller...');
+    console.log('⏳ Waiting before starting restore...');
+    await sleep(300);
+    
+    // FIRST PASS - Send all button states
+    console.log('🎯 FIRST PASS: Restoring LED states to physical controller...');
+    console.log(`🎯 Processing ${Object.keys(buttonStates).length} button states for restoration...`);
+    
+    for (const midiNote of Object.keys(buttonStates)) {
+        const buttonState = buttonStates[midiNote];
+        const pad = gridPads[midiNote];
         
-        // Send MIDI commands to controller to restore LED states
-        // Add delay between commands to prevent overwhelming the controller
-        console.log(`🎯 Processing ${Object.keys(buttonStates).length} button states for restoration...`);
-        Object.keys(buttonStates).forEach((midiNote, index) => {
-            const buttonState = buttonStates[midiNote];
-            const pad = gridPads[midiNote];
+        console.log(`🔍 Processing button ${midiNote}: isOn=${buttonState.isOn}, assignedColor=${buttonState.assignedColor}, behavior=${buttonState.behavior}`);
+        
+        if (pad && buttonState) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            let ledColor;
             
-            console.log(`🔍 Processing button ${midiNote}: assignedColor=${buttonState.assignedColor}, behavior=${buttonState.behavior}`);
-            
-            if (pad && buttonState) {
-                const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
-                let ledColor;
-                
-                // Determine correct LED color for button type
-                if (channel === 0) {
-                    if (midiNote >= 100 && midiNote <= 107) {
-                        // Bottom buttons (Track Buttons) - Force RED
-                        ledColor = colorPalette.find(c => c.name === 'Red');
-                    } else if (midiNote >= 112 && midiNote <= 119) {
-                        // Side buttons (Scene Launch) - Force GREEN
-                        ledColor = colorPalette.find(c => c.name === 'Green');
-                    } else {
-                        // Fallback for other Channel 0 buttons
-                        ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
-                    }
+            // Determine correct LED color for button type
+            if (channel === 0) {
+                if (midiNote >= 100 && midiNote <= 107) {
+                    // Bottom buttons (Track Buttons) - Force RED
+                    ledColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNote >= 112 && midiNote <= 119) {
+                    // Side buttons (Scene Launch) - Force GREEN
+                    ledColor = colorPalette.find(c => c.name === 'Green');
                 } else {
-                    // Grid buttons (Channel 5) - Use assigned color (RGB LEDs)
+                    // Fallback for other Channel 0 buttons
                     ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
                 }
-                
-                // Send MIDI command with delay to prevent overwhelming the controller
-                // All buttons are reset to ON state when loading
-                setTimeout(() => {
-                    if (ledColor) {
-                        sendMIDIToController(parseInt(midiNote), true, ledColor.velocity, channel);
-                        console.log(`✅ Restored button ${midiNote} to ON with ${ledColor.name} color on channel ${channel}`);
-                    } else {
-                        console.error(`❌ LED color not found for button ${midiNote}`);
-                    }
-                }, index * 20); // Increased to 20ms delay between each command
+            } else {
+                // Grid buttons (Channel 5) - Use assigned color (RGB LEDs)
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
             }
-        });
+            
+            if (buttonState.isOn && ledColor) {
+                await sendMIDIToController(parseInt(midiNote), true, ledColor.velocity, channel);
+                console.log(`✅ Restored button ${midiNote} to ON with ${ledColor.name} color on channel ${channel}`);
+            } else if (!buttonState.isOn) {
+                // If button should be OFF, turn it completely off (velocity 0)
+                await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+                console.log(`⚫ Restored button ${midiNote} to OFF (velocity 0) on channel ${channel}`);
+            }
+        }
+    }
+    
+    // Turn off any unassigned buttons
+    console.log('🔄 Turning off unassigned buttons...');
+    for (const midiNote of Object.keys(gridPads)) {
+        if (!buttonStates[midiNote]) {
+            const pad = gridPads[midiNote];
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+            console.log(`🔴 Turned off unassigned button ${midiNote} on channel ${channel}`);
+        }
+    }
+    
+    // Wait for first pass to complete
+    console.log('⏳ Waiting for first pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Waiting for controller to process first pass...');
+    await sleep(300);
+    
+    // SECOND PASS - Double-check all button states
+    console.log('🎯 SECOND PASS: Double-checking all button states...');
+    
+    for (const midiNote of Object.keys(buttonStates)) {
+        const buttonState = buttonStates[midiNote];
+        const pad = gridPads[midiNote];
         
-        // Also restore any buttons that should be completely off (not just white)
-        // This ensures buttons without assigned colors are turned off
-        const assignedButtonCount = Object.keys(buttonStates).length;
-        Object.keys(gridPads).forEach((midiNote, index) => {
-            if (!buttonStates[midiNote]) {
-                const pad = gridPads[midiNote];
-                const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
-                
-                // Turn off buttons that don't have assigned states
-                setTimeout(() => {
-                    sendMIDIToController(parseInt(midiNote), false, 0, channel);
-                    console.log(`🔴 Turned off unassigned button ${midiNote} on channel ${channel}`);
-                }, (assignedButtonCount * 20) + (index * 10)); // Start after assigned buttons with longer delay
+        if (pad && buttonState) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            let ledColor;
+            
+            // Determine correct LED color for button type
+            if (channel === 0) {
+                if (midiNote >= 100 && midiNote <= 107) {
+                    ledColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNote >= 112 && midiNote <= 119) {
+                    ledColor = colorPalette.find(c => c.name === 'Green');
+                } else {
+                    ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+                }
+            } else {
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
             }
-        });
-    }, 100); // Wait 100ms before starting to send restore commands
+            
+            if (buttonState.isOn && ledColor) {
+                await sendMIDIToController(parseInt(midiNote), true, ledColor.velocity, channel);
+            } else if (!buttonState.isOn) {
+                await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+            }
+        }
+    }
+    
+    // Wait for second pass to complete
+    console.log('⏳ Waiting for second pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Waiting for controller to process second pass...');
+    await sleep(300);
+    
+    // THIRD PASS - Final verification of all button states
+    console.log('🎯 THIRD PASS: Final verification of all button states...');
+    
+    for (const midiNote of Object.keys(buttonStates)) {
+        const buttonState = buttonStates[midiNote];
+        const pad = gridPads[midiNote];
+        
+        if (pad && buttonState) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            let ledColor;
+            
+            // Determine correct LED color for button type
+            if (channel === 0) {
+                if (midiNote >= 100 && midiNote <= 107) {
+                    ledColor = colorPalette.find(c => c.name === 'Red');
+                } else if (midiNote >= 112 && midiNote <= 119) {
+                    ledColor = colorPalette.find(c => c.name === 'Green');
+                } else {
+                    ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+                }
+            } else {
+                ledColor = colorPalette.find(c => c.value === buttonState.assignedColor);
+            }
+            
+            if (buttonState.isOn && ledColor) {
+                await sendMIDIToController(parseInt(midiNote), true, ledColor.velocity, channel);
+            } else if (!buttonState.isOn) {
+                await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+            }
+        }
+    }
+    
+    // Wait for third pass to complete
+    console.log('⏳ Waiting for third pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Final wait for controller processing...');
+    await sleep(300);
     
     console.log(`✅ Grid state "${gridState.name || 'Unknown'}" restored successfully`);
     console.log(`🎯 Restored ${Object.keys(buttonStates).length} button states to physical controller`);
@@ -1443,7 +1606,7 @@ function restoreGridState(gridState) {
     if (Object.keys(buttonStates).length > 0) {
         console.log('📋 Restored button details:');
         Object.entries(buttonStates).forEach(([midiNote, state]) => {
-            console.log(`  • Button ${midiNote}: ${state.assignedColor} (${state.behavior})`);
+            console.log(`  • Button ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'} (${state.behavior})`);
         });
     }
 }
@@ -1527,7 +1690,7 @@ function showDebugInfo() {
         console.log('Button State Details:');
         Object.entries(buttonStates).forEach(([midiNote, state]) => {
             const blinkStatus = blinkingButtons.has(parseInt(midiNote)) ? ' - BLINKING' : '';
-            console.log(`  Note ${midiNote}: ${state.assignedColor} (${state.behavior})${blinkStatus}`);
+            console.log(`  Note ${midiNote}: ${state.assignedColor} - ${state.isOn ? 'ON' : 'OFF'} (${state.behavior})${blinkStatus}`);
         });
     }
     

@@ -1,10 +1,155 @@
 {
-  "name": "f",
-  "timestamp": "2025-10-08T01:46:30.628Z",
+  "name": "di",
+  "timestamp": "2025-10-14T04:39:57.343Z",
   "buttonStates": {
+    "0": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "1": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "2": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "3": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "4": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "5": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "6": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "7": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "8": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "9": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "10": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "11": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "12": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "13": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "14": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "15": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "16": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "17": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "18": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "19": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "20": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "21": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "22": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "23": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
     "24": {
       "isOn": true,
       "assignedColor": "pink",
+      "behavior": "toggle"
+    },
+    "25": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "26": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "27": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "28": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "29": {
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "toggle"
     },
     "30": {
@@ -107,6 +252,16 @@
       "assignedColor": "pink",
       "behavior": "toggle"
     },
+    "50": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "51": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
     "52": {
       "isOn": true,
       "assignedColor": "orange",
@@ -177,14 +332,64 @@
       "assignedColor": "red",
       "behavior": "toggle"
     },
-    "112": {
+    "102": {
       "isOn": false,
-      "assignedColor": "orange",
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "103": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "104": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "105": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "106": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "107": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "112": {
+      "isOn": true,
+      "assignedColor": "green",
+      "behavior": "toggle"
+    },
+    "114": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "115": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "116": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "toggle"
+    },
+    "117": {
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "toggle"
     },
     "119": {
-      "isOn": false,
-      "assignedColor": "pink",
+      "isOn": true,
+      "assignedColor": "white",
       "behavior": "toggle"
     }
   },
