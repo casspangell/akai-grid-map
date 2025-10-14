@@ -688,29 +688,30 @@ async function togglePadClick(pad) {
         return;
     }
     
-    // Determine button type and force appropriate color for single-color LEDs
+    // Determine button type and appropriate colors
+    // displayColor = what shows on web UI (use selected color)
+    // ledColor = what gets sent to physical device (respects hardware limitations)
     let displayColor, ledColor, buttonType;
+    
+    // Web UI always uses the selected color
+    displayColor = colorPalette.find(c => c.value === selectedColor);
     
     if (channel === 0) {
         if (midiNote >= 100 && midiNote <= 107) {
-            // Bottom buttons (Track Buttons) - Force RED
-            displayColor = colorPalette.find(c => c.name === 'Red');
-            ledColor = displayColor;
+            // Bottom buttons (Track Buttons) - Physical LED is RED only
+            ledColor = colorPalette.find(c => c.name === 'Red');
             buttonType = "Track Button";
         } else if (midiNote >= 112 && midiNote <= 119) {
-            // Side buttons (Scene Launch) - Force GREEN
-            displayColor = colorPalette.find(c => c.name === 'Green');
-            ledColor = displayColor;
+            // Side buttons (Scene Launch) - Physical LED is GREEN only
+            ledColor = colorPalette.find(c => c.name === 'Green');
             buttonType = "Scene Launch Button";
         } else {
             // Fallback for other Channel 0 buttons
-            displayColor = colorPalette.find(c => c.value === selectedColor);
-            ledColor = displayColor;
+            ledColor = colorPalette.find(c => c.value === selectedColor);
             buttonType = "Channel 0 Button";
         }
     } else {
-        // Grid buttons (Channel 5) - Use selected color (RGB LEDs)
-        displayColor = colorPalette.find(c => c.value === selectedColor);
+        // Grid buttons (Channel 5) - RGB LEDs can show any color
         ledColor = displayColor;
         buttonType = "Grid Button";
     }
@@ -727,18 +728,15 @@ async function togglePadClick(pad) {
     pad.style.backgroundColor = displayColor.css;
     pad.style.borderColor = displayColor.css;
     
-    // Add sending indicator
-    pad.classList.add('sending');
-    console.log(`Web App: Assigned ${selectedColor} → ${displayColor.name} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (immediately ON)`);
+    if (displayColor.name === ledColor.name) {
+        console.log(`Web App: Assigned ${selectedColor} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (Web UI & Device: ${displayColor.name})`);
+    } else {
+        console.log(`Web App: Assigned ${selectedColor} to ${buttonType} [${coordRow},${col}] - MIDI Note: ${midiNote}, Channel: ${channel} (Web UI: ${displayColor.name}, Device LED: ${ledColor.name})`);
+    }
     
     // Immediately turn ON the LED on the physical controller (use LED color)
     // This is async and won't block other button clicks
     await sendMIDIToController(midiNote, true, ledColor.velocity, channel);
-    
-    // Remove sending indicator after message is queued
-    setTimeout(() => {
-        pad.classList.remove('sending');
-    }, 100);
     
     // Store pending confirmation to handle controller echo
     pendingConfirmations[midiNote] = {
