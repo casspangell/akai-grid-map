@@ -480,15 +480,18 @@ h2 {
 }
 
 .side-button.velocity-low {
-    box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+    background: #ffd93d;
+    border-color: #ffc107;
 }
 
 .side-button.velocity-medium {
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+    background: #ff9f43;
+    border-color: #fd7e14;
 }
 
 .side-button.velocity-high {
-    box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+    background: #ff6b6b;
+    border-color: #e55353;
 }
 
 .bottom-buttons {
@@ -550,15 +553,18 @@ h2 {
 }
 
 .bottom-button-inner.velocity-low {
-    box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+    background: #ffd93d;
+    border-color: #ffc107;
 }
 
 .bottom-button-inner.velocity-medium {
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+    background: #ff9f43;
+    border-color: #fd7e14;
 }
 
 .bottom-button-inner.velocity-high {
-    box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+    background: #ff6b6b;
+    border-color: #e55353;
 }
 
 .grid-pad {

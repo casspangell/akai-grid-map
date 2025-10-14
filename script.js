@@ -437,6 +437,13 @@ function handleMIDIMessage(message) {
             return; // Exit early to prevent normal button processing
         }
         
+        // Special handler for MIDI note 102
+        if (message.note.number === 102) {
+            console.log("Loading dialogue3.json...");
+            loadDialogueState('dialogue3.json');
+            return; // Exit early to prevent normal button processing
+        }
+        
         // This is a physical button press from the controller
         console.log(`🎮 Physical controller button press detected: MIDI Note ${message.note.number}`);
         
