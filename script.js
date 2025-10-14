@@ -1031,14 +1031,14 @@ async function resetAllMIDILEDs() {
 }
 
 async function clearGrid() {
-    console.log('🧹 Starting grid clear...');
+    console.log('🧹 Starting COMPREHENSIVE grid clear with multiple passes...');
     
     // Clear the message queue first to prevent conflicts
     console.log(`🗑️ Clearing ${midiMessageQueue.length} pending messages from queue`);
     midiMessageQueue.length = 0;
     
     // Wait a moment for any in-progress message to complete
-    await sleep(50);
+    await sleep(150);
     
     // Remove active states from all grid pads
     Object.values(gridPads).forEach(pad => {
@@ -1061,7 +1061,8 @@ async function clearGrid() {
         delete pendingConfirmations[midiNote];
     });
     
-    // Turn off all LEDs on controller with correct channels
+    // FIRST PASS - Turn off all LEDs on controller with correct channels
+    console.log('🔄 FIRST PASS: Turning off all buttons...');
     for (const midiNote of Object.keys(gridPads)) {
         const pad = gridPads[midiNote];
         if (pad) {
@@ -1069,6 +1070,50 @@ async function clearGrid() {
             await sendMIDIToController(parseInt(midiNote), false, 0, channel);
         }
     }
+    
+    // Wait for first pass to complete
+    console.log('⏳ Waiting for first pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Waiting for controller to process first pass...');
+    await sleep(300);
+    
+    // SECOND PASS - Turn off all LEDs again
+    console.log('🔄 SECOND PASS: Double-checking all buttons are off...');
+    for (const midiNote of Object.keys(gridPads)) {
+        const pad = gridPads[midiNote];
+        if (pad) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+        }
+    }
+    
+    // Wait for second pass to complete
+    console.log('⏳ Waiting for second pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Waiting for controller to process second pass...');
+    await sleep(300);
+    
+    // THIRD PASS - Final verification all buttons are off
+    console.log('🔄 THIRD PASS: Final verification all buttons are off...');
+    for (const midiNote of Object.keys(gridPads)) {
+        const pad = gridPads[midiNote];
+        if (pad) {
+            const channel = pad.getAttribute('data-channel') ? parseInt(pad.getAttribute('data-channel')) : 5;
+            await sendMIDIToController(parseInt(midiNote), false, 0, channel);
+        }
+    }
+    
+    // Wait for third pass to complete
+    console.log('⏳ Waiting for third pass to send...');
+    while (isProcessingQueue || midiMessageQueue.length > 0) {
+        await sleep(20);
+    }
+    console.log('⏳ Final wait for controller processing...');
+    await sleep(300);
     
     // Remove active states from circular buttons
     Object.values(circularButtons).forEach(button => {
@@ -1084,12 +1129,7 @@ async function clearGrid() {
         fader.value = 64;
     });
     
-    // Wait for all queued messages to be sent
-    while (isProcessingQueue || midiMessageQueue.length > 0) {
-        await sleep(10);
-    }
-    
-    console.log('✅ Grid cleared - all pads reset to default state');
+    console.log('✅ COMPREHENSIVE grid clear complete - all pads reset to default state');
 }
 
 // Save State Functions
