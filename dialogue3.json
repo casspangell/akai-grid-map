@@ -1,396 +1,371 @@
 {
   "name": "dialogue3",
-  "timestamp": "2025-10-14T04:45:06.728Z",
+  "timestamp": "2025-10-19T17:23:36.796Z",
   "buttonStates": {
-    "0": {
-      "isOn": false,
-      "assignedColor": "off",
-      "behavior": "toggle"
-    },
-    "1": {
-      "isOn": false,
-      "assignedColor": "off",
-      "behavior": "toggle"
-    },
     "2": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "3": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "4": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "5": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "6": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "7": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "8": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "9": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "10": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "11": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "12": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "13": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "14": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "15": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "16": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "17": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "18": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "19": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "20": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "21": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "22": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "23": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "24": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "25": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "26": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "27": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "28": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "29": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "30": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "31": {
-      "isOn": true,
-      "assignedColor": "purple",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "32": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "33": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "34": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "35": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "36": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "37": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "38": {
-      "isOn": true,
-      "assignedColor": "blue",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "39": {
-      "isOn": true,
-      "assignedColor": "blue",
-      "behavior": "solid"
-    },
-    "40": {
-      "isOn": true,
-      "assignedColor": "purple",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "41": {
-      "isOn": true,
-      "assignedColor": "purple",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "42": {
-      "isOn": true,
-      "assignedColor": "purple",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "43": {
-      "isOn": true,
-      "assignedColor": "purple",
+      "isOn": false,
+      "assignedColor": "off",
       "behavior": "solid"
     },
     "44": {
-      "isOn": true,
-      "assignedColor": "green",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "45": {
-      "isOn": true,
-      "assignedColor": "green",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "46": {
-      "isOn": true,
-      "assignedColor": "green",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "47": {
-      "isOn": true,
-      "assignedColor": "green",
-      "behavior": "toggle"
-    },
-    "48": {
-      "isOn": true,
-      "assignedColor": "yellow",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "49": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "50": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "51": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "52": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "53": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "54": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "55": {
-      "isOn": true,
-      "assignedColor": "orange",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "56": {
       "isOn": true,
       "assignedColor": "red",
-      "behavior": "toggle"
-    },
-    "57": {
-      "isOn": true,
-      "assignedColor": "pink",
-      "behavior": "toggle"
-    },
-    "58": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "59": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "60": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "61": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "62": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "63": {
-      "isOn": true,
-      "assignedColor": "red",
-      "behavior": "toggle"
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "100": {
       "isOn": true,
       "assignedColor": "red",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "101": {
       "isOn": true,
       "assignedColor": "red",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "102": {
-      "isOn": false,
-      "assignedColor": "off",
+      "isOn": true,
+      "assignedColor": "red",
       "behavior": "toggle"
     },
     "103": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "104": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "105": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "106": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "107": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "112": {
-      "isOn": true,
-      "assignedColor": "green",
-      "behavior": "toggle"
-    },
-    "114": {
       "isOn": false,
       "assignedColor": "off",
+      "behavior": "solid"
+    },
+    "114": {
+      "isOn": true,
+      "assignedColor": "green",
       "behavior": "toggle"
     },
     "115": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "116": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
     },
     "117": {
       "isOn": false,
       "assignedColor": "off",
-      "behavior": "toggle"
+      "behavior": "solid"
+    },
+    "118": {
+      "isOn": false,
+      "assignedColor": "off",
+      "behavior": "solid"
     },
     "119": {
       "isOn": true,
-      "assignedColor": "white",
-      "behavior": "toggle"
+      "assignedColor": "green",
+      "behavior": "solid"
     }
   },
   "gridPads": {
@@ -413,33 +388,33 @@
       "hasActiveClass": false
     },
     "3": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "4": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "5": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "6": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "7": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "8": {
@@ -455,39 +430,39 @@
       "hasActiveClass": false
     },
     "10": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "11": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "12": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "13": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "14": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "15": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "16": {
@@ -509,27 +484,27 @@
       "hasActiveClass": false
     },
     "19": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "20": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "21": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "22": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "23": {
@@ -539,9 +514,9 @@
       "hasActiveClass": false
     },
     "24": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "25": {
@@ -575,123 +550,123 @@
       "hasActiveClass": false
     },
     "30": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "31": {
-      "backgroundColor": "rgb(84, 0, 255)",
-      "borderColor": "rgb(84, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "32": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "33": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "34": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "35": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "36": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "37": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "38": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "39": {
-      "backgroundColor": "rgb(0, 0, 255)",
-      "borderColor": "rgb(0, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "40": {
-      "backgroundColor": "rgb(84, 0, 255)",
-      "borderColor": "rgb(84, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "41": {
-      "backgroundColor": "rgb(84, 0, 255)",
-      "borderColor": "rgb(84, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "42": {
-      "backgroundColor": "rgb(84, 0, 255)",
-      "borderColor": "rgb(84, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "43": {
-      "backgroundColor": "rgb(84, 0, 255)",
-      "borderColor": "rgb(84, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "44": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "45": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "46": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "47": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "48": {
-      "backgroundColor": "rgb(255, 255, 0)",
-      "borderColor": "rgb(255, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "49": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "50": {
@@ -707,27 +682,27 @@
       "hasActiveClass": false
     },
     "52": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "53": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "54": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "55": {
-      "backgroundColor": "rgb(204, 68, 0)",
-      "borderColor": "rgb(204, 68, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "56": {
@@ -737,45 +712,45 @@
       "hasActiveClass": false
     },
     "57": {
-      "backgroundColor": "rgb(255, 0, 255)",
-      "borderColor": "rgb(255, 0, 255)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "58": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "59": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "60": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "61": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "62": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "63": {
-      "backgroundColor": "rgb(255, 0, 0)",
-      "borderColor": "rgb(255, 0, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "100": {
@@ -791,9 +766,9 @@
       "hasActiveClass": false
     },
     "102": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 0, 0)",
+      "borderColor": "rgb(255, 0, 0)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "103": {
@@ -827,9 +802,9 @@
       "hasActiveClass": false
     },
     "112": {
-      "backgroundColor": "rgb(0, 255, 0)",
-      "borderColor": "rgb(0, 255, 0)",
-      "hasClickedClass": true,
+      "backgroundColor": "",
+      "borderColor": "",
+      "hasClickedClass": false,
       "hasActiveClass": false
     },
     "113": {
@@ -839,9 +814,9 @@
       "hasActiveClass": false
     },
     "114": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(0, 255, 0)",
+      "borderColor": "rgb(0, 255, 0)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "115": {

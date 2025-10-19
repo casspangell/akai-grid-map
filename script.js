@@ -351,7 +351,10 @@ async function sendMIDIImmediate(midiNote, isOn, velocity = 127, channel = 5) {
                         // Send Note On message with correct channel
                         output.send([statusByte, midiNote, colorVelocity]);
                         if (bang === 0) {
-                            console.log(`✅ APC Mini MK2: Sent solid LED (x${BANG_COUNT}) - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${channel} (0x${channel.toString(16).toUpperCase()})`);
+                            console.log(`✅ APC Mini MK2: Sent solid LED (x${BANG_COUNT}) - Note: ${midiNote}, Color: ${colorVelocity}, Channel: ${channel} (0x${channel.toString(16).toUpperCase()}) [${statusByte}, ${midiNote}, ${colorVelocity}]`);
+                            if (midiNote === 122) {
+                                console.log(`🔍 Button 122 SEND: StatusByte=${statusByte} (0x${statusByte.toString(16)}), Note=${midiNote}, Velocity=${colorVelocity}`);
+                            }
                         }
                     } else {
                         // Send Note On with velocity 0 to turn off LED
@@ -394,7 +397,17 @@ function handleMIDIMessage(message) {
     if (message.type === 'noteon') {
         messageType = 'Note On';
         className = 'note-on';
-        messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${message.channel}`;
+        
+        // Determine actual channel from raw MIDI data if channel is undefined
+        let actualChannel = message.channel;
+        if (actualChannel === undefined && message.rawData && message.rawData.length > 0) {
+            // Extract channel from status byte (first byte)
+            // Status byte format: 0x9n where n is the channel (0-15)
+            actualChannel = (message.rawData[0] & 0x0F);
+            console.log(`📡 Derived channel ${actualChannel} from raw data [${message.rawData.join(', ')}]`);
+        }
+        
+        messageText = `Note: ${getNoteNameFromMIDI(message.note.number)}, Velocity: ${message.velocity}, Channel: ${actualChannel}`;
         
         // Check if this is an echo from a web-initiated command
         if (pendingConfirmations[message.note.number]) {
@@ -445,7 +458,12 @@ function handleMIDIMessage(message) {
         }
         
         // This is a physical button press from the controller
-        console.log(`🎮 Physical controller button press detected: MIDI Note ${message.note.number}`);
+        console.log(`🎮 Physical controller button press detected: MIDI Note ${message.note.number}, Channel: ${message.channel}, Velocity: ${message.velocity}`);
+        
+        // Special debug for button 122 to identify its channel
+        if (message.note.number === 122) {
+            console.log(`🔍 BUTTON 122 DEBUG: Channel=${message.channel}, Velocity=${message.velocity}, Raw=[${message.rawData.join(', ')}]`);
+        }
         
         // Show visual feedback on web app grid
         updateGridPad(message.note.number, true, message.velocity);
@@ -561,6 +579,9 @@ function createControllerGrid() {
         
         sideButtonsEl.appendChild(button);
     }
+    
+    // Note: Button 122 (Shift) has no LED, so it's not shown in the UI
+    // It still works when pressed on the physical controller (loads dialogue3.json)
     
     // Create 8 bottom buttons - MIDI notes 100-107 (Track Button 1-8) on Channel 0
     for (let i = 0; i < 8; i++) {
@@ -785,8 +806,8 @@ function toggleButtonState(midiNote) {
             if (midiNote >= 100 && midiNote <= 107) {
                 // Bottom buttons (Track Buttons) - Force RED
                 ledColor = colorPalette.find(c => c.name === 'Red');
-            } else if (midiNote >= 112 && midiNote <= 119) {
-                // Side buttons (Scene Launch) - Force GREEN
+            } else if ((midiNote >= 112 && midiNote <= 119) || midiNote === 122) {
+                // Side buttons (Scene Launch + Shift) - Force GREEN
                 ledColor = colorPalette.find(c => c.name === 'Green');
             } else {
                 // Fallback for other Channel 0 buttons
@@ -848,7 +869,7 @@ function startBlinking(midiNote, assignedColor) {
     if (channel === 0) {
         if (midiNote >= 100 && midiNote <= 107) {
             ledColor = colorPalette.find(c => c.name === 'Red');
-        } else if (midiNote >= 112 && midiNote <= 119) {
+        } else if ((midiNote >= 112 && midiNote <= 119) || midiNote === 122) {
             ledColor = colorPalette.find(c => c.name === 'Green');
         } else {
             ledColor = colorPalette.find(c => c.value === assignedColor);
@@ -990,10 +1011,11 @@ async function resetAllMIDILEDs() {
     }
     
     // Turn off side buttons (notes 112-119) with channel 0
-    console.log('🔄 Turning off 8 side buttons...');
+    console.log('🔄 Turning off 8 side buttons (112-119)...');
     for (let midiNote = 112; midiNote <= 119; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 0);
     }
+    // Note: Button 122 has no LED, so we don't send OFF commands to it
     
     // Wait for all queued messages to be sent
     console.log('⏳ Waiting for first pass to complete...');
@@ -1016,6 +1038,7 @@ async function resetAllMIDILEDs() {
     for (let midiNote = 112; midiNote <= 119; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 0);
     }
+    // Note: Button 122 has no LED, skipping
     
     // Wait for all second pass messages to be sent
     console.log('⏳ Waiting for second pass to complete...');
@@ -1680,6 +1703,7 @@ async function resetAllPads() {
     for (let midiNote = 112; midiNote <= 119; midiNote++) {
         await sendMIDIToController(midiNote, false, 0, 0);
     }
+    // Note: Button 122 has no LED, skipping
     
     // Remove clicked states from all web app pads
     Object.values(gridPads).forEach(pad => {
@@ -1855,6 +1879,37 @@ function testMIDINote(midiNote, velocity) {
             console.error(`Error sending to note ${midiNote}:`, error);
         }
     });
+}
+
+// Test button 122 on different channels
+function testButton122() {
+    console.log('🧪 Testing button 122 on different channels...');
+    const greenVelocity = 21; // Green color velocity
+    
+    // Test on channel 0 (0x90)
+    console.log('Testing channel 0 (0x90)...');
+    midiOutputs.forEach(output => {
+        output.send([0x90, 122, greenVelocity]);
+    });
+    
+    setTimeout(() => {
+        // Test on channel 5 (0x95)
+        console.log('Testing channel 5 (0x95)...');
+        midiOutputs.forEach(output => {
+            output.send([0x95, 122, greenVelocity]);
+        });
+    }, 1000);
+    
+    setTimeout(() => {
+        // Test on channel 6 (0x96)
+        console.log('Testing channel 6 (0x96)...');
+        midiOutputs.forEach(output => {
+            output.send([0x96, 122, greenVelocity]);
+        });
+    }, 2000);
+    
+    console.log('💡 Watch which test makes the LED light up!');
+    console.log('Also press button 122 on your pad to see its actual channel in the console.');
 }
 
 function getNoteNameFromMIDI(midiNote) {
