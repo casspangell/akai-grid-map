@@ -1,6 +1,6 @@
 # Instructions
 
-Start the server with Python 3 on mac
+Start the server with Python 3
 python3 -m http.server 8000
 
 Open a web browser to 
