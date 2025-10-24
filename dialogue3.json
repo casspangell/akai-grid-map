@@ -1,6 +1,6 @@
 {
   "name": "dialogue3",
-  "timestamp": "2025-10-19T17:23:36.796Z",
+  "timestamp": "2025-10-22T05:06:59.894Z",
   "buttonStates": {
     "2": {
       "isOn": false,
@@ -227,6 +227,11 @@
       "assignedColor": "off",
       "behavior": "solid"
     },
+    "48": {
+      "isOn": true,
+      "assignedColor": "white",
+      "behavior": "toggle"
+    },
     "49": {
       "isOn": false,
       "assignedColor": "off",
@@ -265,7 +270,7 @@
     "56": {
       "isOn": true,
       "assignedColor": "red",
-      "behavior": "solid"
+      "behavior": "toggle"
     },
     "59": {
       "isOn": false,
@@ -300,7 +305,7 @@
     "101": {
       "isOn": true,
       "assignedColor": "red",
-      "behavior": "solid"
+      "behavior": "toggle"
     },
     "102": {
       "isOn": true,
@@ -658,9 +663,9 @@
       "hasActiveClass": false
     },
     "48": {
-      "backgroundColor": "",
-      "borderColor": "",
-      "hasClickedClass": false,
+      "backgroundColor": "rgb(255, 255, 255)",
+      "borderColor": "rgb(255, 255, 255)",
+      "hasClickedClass": true,
       "hasActiveClass": false
     },
     "49": {

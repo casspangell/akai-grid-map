@@ -162,14 +162,34 @@ async function enableMIDI() {
 function updateDeviceList() {
     const devices = [];
     
-    // List input devices
-    WebMidi.inputs.forEach(input => {
-        devices.push(`🎮 ${input.name}`);
+    // Filter for APCmini mk2 devices
+    const apcMiniInputs = WebMidi.inputs.filter(input => {
+        const deviceName = input.name.toLowerCase();
+        return (deviceName.includes('apc') && deviceName.includes('mini')) ||
+               deviceName.includes('apc mini') ||
+               deviceName.includes('apcmini');
+    });
+    
+    // List APCmini mk2 input devices (active)
+    apcMiniInputs.forEach(input => {
+        devices.push(`🎮 ${input.name} <span class="device-status">(Listening)</span>`);
+    });
+    
+    // List other input devices (not listening)
+    const otherInputs = WebMidi.inputs.filter(input => {
+        const deviceName = input.name.toLowerCase();
+        return !((deviceName.includes('apc') && deviceName.includes('mini')) ||
+                 deviceName.includes('apc mini') ||
+                 deviceName.includes('apcmini'));
+    });
+    
+    otherInputs.forEach(input => {
+        devices.push(`🎮 ${input.name} <span class="device-status inactive">(Ignored)</span>`);
     });
     
     // List output devices
     WebMidi.outputs.forEach(output => {
-        devices.push(`🔊 ${output.name}`);
+        devices.push(`🔊 ${output.name} <span class="device-status">(Output)</span>`);
     });
     
     if (devices.length === 0) {
@@ -187,15 +207,31 @@ function setupMIDIInputs() {
         input.removeListener();
     });
     
-    // Add listeners to all inputs
-    WebMidi.inputs.forEach(input => {
+    // Filter for APCmini mk2 devices only
+    const apcMiniDevices = WebMidi.inputs.filter(input => {
+        const deviceName = input.name.toLowerCase();
+        return (deviceName.includes('apc') && deviceName.includes('mini')) ||
+               deviceName.includes('apc mini') ||
+               deviceName.includes('apcmini');
+    });
+    
+    if (apcMiniDevices.length === 0) {
+        console.log('⚠️ No APCmini mk2 devices found. Available devices:');
+        WebMidi.inputs.forEach(input => {
+            console.log(`  - ${input.name}`);
+        });
+        return;
+    }
+    
+    // Add listeners only to APCmini mk2 devices
+    apcMiniDevices.forEach(input => {
         input.addListener('noteon', handleMIDIMessage);
         input.addListener('noteoff', handleMIDIMessage);
         input.addListener('controlchange', handleMIDIMessage);
-        console.log(`Listening to MIDI input: ${input.name}`);
+        console.log(`✅ Listening to APCmini mk2 input: ${input.name}`);
     });
     
-    // Store output devices for sending MIDI
+    // Store output devices for sending MIDI (keep all outputs for sending)
     midiOutputs = WebMidi.outputs;
 }
 
